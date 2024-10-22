@@ -17,7 +17,13 @@ public class GithubController {
 
     @GetMapping("/file")
     public ResponseEntity<Void> findGitRepoInfo() throws JsonProcessingException {
-        gitHubService.getFileContent("msung99", "Gatsby-Starter-Haon", "gatsby-config.js", "TOKEN");
+        gitHubService.getFileContent("msung99", "Gatsby-Starter-Haon", "gatsby-config.js", "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");
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/folder")
+    public ResponseEntity<Void> findGitFolderRepoInfo() throws Exception {
+        gitHubService.getFolderContents("msung99", "Gatsby-Starter-Haon", "src", "main", "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");
         return ResponseEntity.noContent().build();
     }
 }
