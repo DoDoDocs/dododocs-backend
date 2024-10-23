@@ -1,6 +1,7 @@
 package dododocs.dododocs.test;
 
 import dododocs.dododocs.test.dto.FindDbTestResponse;
+import dododocs.dododocs.test.dto.FindTrueTestResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class ApiTestController {
 
     @GetMapping("/server")
-    public ResponseEntity<Void> findTrueResponse() {
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<FindTrueTestResponse> findTrueResponse() {
+        return ResponseEntity.ok(new FindTrueTestResponse("ok!"));
     }
 
     @GetMapping("/db")
