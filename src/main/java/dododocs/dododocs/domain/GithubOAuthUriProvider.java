@@ -5,17 +5,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class GithubOAuthUriProvider {
-    private final String authorizationUri;
-    private final String clientId;
-    private final String redirectUri;
-    private final String responseType;
-
-    public GithubOAuthUriProvider(final String authorizationUri, final String clientId, final String redirectUri, final String responseType) {
-        this.authorizationUri = authorizationUri;
-        this.clientId = clientId;
-        this.redirectUri = redirectUri;
-        this.responseType = responseType;
-    }
+    private String authorizationUri;
+    private String clientId;
+    private String redirectUri;
+    private String responseType;
 
     public String generateUri() {
         return authorizationUri + "?"
