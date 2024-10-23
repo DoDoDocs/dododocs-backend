@@ -24,7 +24,7 @@ logging:
             sql:
               BasicBinder: TRACE
 oauth:
-  kakao:
+  github:
     authorize_uri: https://kauth.kakao.com/oauth/authorize
     redirect_uri: http://localhost:3000/callback/kakao
     client_secret: secret_secret_secret_secret
