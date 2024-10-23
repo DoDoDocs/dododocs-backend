@@ -11,7 +11,7 @@ public class JwtTokenCreator {
     }
 
     public String createToken(final long memberId) {
-        // final String accessToken = jwtTokenProvider.
-        return null;
+        final String accessToken = jwtTokenProvider.createAccessToken(memberId);
+        return accessToken;
     }
 }
