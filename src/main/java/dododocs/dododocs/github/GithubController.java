@@ -1,4 +1,4 @@
-package dododocs.dododocs;
+package dododocs.dododocs.github;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +23,7 @@ public class GithubController {
 
     @GetMapping("/folder")
     public ResponseEntity<Void> findGitFolderRepoInfo() throws Exception {
-        gitHubService.getFolderContents("msung99", "Gatsby-Starter-Haon", "src", "main", "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");
+        gitHubService.getAllContents("msung99", "Baro-be-", "src/main/java/hyundai/hyundai", "main", "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");
         return ResponseEntity.noContent().build();
     }
 }

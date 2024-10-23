@@ -1,4 +1,4 @@
-package dododocs.dododocs;
+package dododocs.dododocs.github;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -50,18 +50,26 @@ public class GitHubService {
         byte[] decodedBytes = Base64.getDecoder().decode(encodedContent);
         String fileContent = new String(decodedBytes, StandardCharsets.UTF_8);
 
-        System.out.println(fileContent);
-
         return response.getBody();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public List<String> getFolderContents(String owner, String repo, String path, String branch, String token) throws Exception {
+    // 재귀적으로 폴더 내 모든 파일과 폴더를 읽어오는 메서드
+    public List<String> getAllContents(String owner, String repo, String path, String branch, String token) throws Exception {
+        List<String> folderContents = new ArrayList<>();
+        readContentsRecursively(owner, repo, path, branch, token, folderContents);
+        return folderContents;
+    }
+
+    // 실제 폴더 내용을 읽고, 재귀적으로 하위 폴더도 읽어오는 메서드
+    private void readContentsRecursively(String owner, String repo, String path, String branch, String token, List<String> folderContents) throws Exception {
         String url = UriComponentsBuilder.fromHttpUrl(GITHUB_API_URL)
                 .pathSegment(owner, repo, "contents", path)
                 .queryParam("ref", branch)  // 브랜치를 ref 파라미터로 지정
                 .toUriString();
+
+        System.out.println(url);
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + token);
@@ -74,8 +82,6 @@ public class GitHubService {
         // JSON 파싱
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(responseBody);
-
-        List<String> folderContents = new ArrayList<>();
 
         // JSON 응답이 배열인지 확인
         if (jsonNode.isArray()) {
@@ -92,18 +98,20 @@ public class GitHubService {
                     String filePath = pathNode.asText();
 
                     if ("file".equals(type)) {
-                        // 파일인 경우
+                        // 파일인 경우 리스트에 추가
+                        System.out.println("File: " + name + " (" + filePath + ")");
                         folderContents.add("File: " + name + " (" + filePath + ")");
                     } else if ("dir".equals(type)) {
-                        // 폴더인 경우
+                        // 폴더인 경우 리스트에 추가하고, 재귀적으로 하위 폴더 내용 읽기
+                        System.out.println("Directory: " + name + " (" + filePath + ")");
                         folderContents.add("Directory: " + name + " (" + filePath + ")");
+                        // 재귀적으로 하위 폴더 내용을 가져옴
+                        readContentsRecursively(owner, repo, filePath, branch, token, folderContents);
                     }
                 }
             }
         } else {
             throw new IllegalArgumentException("Expected JSON array but received: " + jsonNode.toString());
         }
-
-        return folderContents;
     }
 }
