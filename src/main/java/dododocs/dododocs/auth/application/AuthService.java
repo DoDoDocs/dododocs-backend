@@ -20,4 +20,10 @@ public class AuthService {
     public String generateUri() {
         return oAuthUriProvider.generateUri();
     }
+
+    public void a() {
+
+    }
+
+    private
 }
