@@ -4,6 +4,7 @@ import dododocs.dododocs.auth.infrastructure.GithubOAuthClient;
 import dododocs.dododocs.auth.infrastructure.GithubOAuthMember;
 import dododocs.dododocs.domain.GithubOAuthUriProvider;
 import dododocs.dododocs.domain.JwtTokenCreator;
+import dododocs.dododocs.domain.repository.MemberRepository;
 import dododocs.dododocs.member.domain.Member;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,10 +19,12 @@ public class AuthService {
 
     public AuthService(final GithubOAuthUriProvider oAuthUriProvider,
                        final JwtTokenCreator jwtTokenCreator,
-                        final GithubOAuthClient githubOAuthClient) {
+                        final GithubOAuthClient githubOAuthClient,
+                       final MemberRepository memberRepository) {
         this.oAuthUriProvider = oAuthUriProvider;
         this.jwtTokenCreator = jwtTokenCreator;
         this.githubOAuthClient = githubOAuthClient;
+        this.memberRepository = memberRepository;
     }
 
     public String generateUri() {
@@ -35,7 +38,7 @@ public class AuthService {
         return accessToken;
     }
 
-    public Member findOrCreateMember(final GithubOAuthmember githubOAuthmember) {
+    public Member findOrCreateMember(final GithubOAuthMember githubOAuthmember) {
         final String email = oAuthmember.getEmail();
 
         if(memberRepository.existsByEmail(email)) {
