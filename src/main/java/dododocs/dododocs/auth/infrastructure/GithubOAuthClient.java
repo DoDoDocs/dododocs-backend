@@ -1,6 +1,7 @@
 package dododocs.dododocs.auth.infrastructure;
 
 import dododocs.dododocs.auth.exception.InvalidOAuthException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
@@ -22,11 +23,11 @@ public class GithubOAuthClient {
     private final String grantType = "authorization_code";
 
     public GithubOAuthClient(final RestTemplate restTemplate,
-                             final String redirectUri,
-                             final String clientId,
-                             final String clientSecret,
-                             final String tokenUri,
-                             final String userUri) {
+                             @Value("${oauth.github.redirect_uri}") final String redirectUri,
+                             @Value("${oauth.github.client_id}") final String clientId,
+                             @Value("${oauth.github.client_secret}") final String clientSecret,
+                             @Value("${oauth.github.token_uri}") final String tokenUri,
+                             @Value("${oauth.github.user_uri}") final String userUri) {
         this.restTemplate = restTemplate;
         this.redirectUri = redirectUri;
         this.clientId = clientId;
