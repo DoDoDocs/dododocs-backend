@@ -1,4 +1,4 @@
-package dododocs.dododocs.domain;
+package dododocs.dododocs.auth.domain;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

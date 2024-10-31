@@ -1,4 +1,4 @@
-package dododocs.dododocs.domain.repository;
+package dododocs.dododocs.auth.domain.repository;
 
 import dododocs.dododocs.member.domain.Member;
 import org.springframework.data.jpa.repository.JpaRepository;

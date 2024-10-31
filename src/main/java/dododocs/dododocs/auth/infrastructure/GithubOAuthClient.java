@@ -66,7 +66,6 @@ public class GithubOAuthClient {
         httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
         params.add("grant_type", grantType);
-        params.add("client_id", clientId);
         params.add("client_secret", clientSecret);
         params.add("code", code);
         params.add("redirect_uri", redirectUri);

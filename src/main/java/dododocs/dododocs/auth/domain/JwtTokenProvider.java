@@ -1,4 +1,4 @@
-package dododocs.dododocs.domain;
+package dododocs.dododocs.auth.domain;
 
 import dododocs.dododocs.auth.exception.InvalidTokenException;
 import org.springframework.beans.factory.annotation.Value;
