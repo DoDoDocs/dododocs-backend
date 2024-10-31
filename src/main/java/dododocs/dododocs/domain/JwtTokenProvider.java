@@ -37,4 +37,17 @@ public class JwtTokenProvider {
                 .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact();
     }
+
+    public void validateToken(final String token) {
+        try {
+            final Jws<Claims> claims = Jwts.parserBuilder()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(token);
+
+            claims.getBody().getExpiration().before(new Date());
+        } catch (JwtException | IllegalArgumentException e) {
+
+        }
+    }
 }
