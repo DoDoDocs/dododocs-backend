@@ -1,5 +1,6 @@
 package dododocs.dododocs.auth.application;
 
+import dododocs.dododocs.auth.exception.NoExistMemberException;
 import dododocs.dododocs.auth.infrastructure.GithubOAuthClient;
 import dododocs.dododocs.auth.infrastructure.GithubOAuthMember;
 import dododocs.dododocs.domain.GithubOAuthUriProvider;
@@ -51,5 +52,14 @@ public class AuthService {
 
     private Member generateMember(final GithubOAuthMember githubOAuthMember) {
         return new Member(githubOAuthMember.getEmail(), githubOAuthMember.getName());
+    }
+
+    public Long extractMemberId(final String accessToken) {
+        final Long memberId = jwtTokenCreator.extractMemberId(accessToken);
+
+        if(!memberRepository.existsById(memberId)) {
+            throw new NoExistMemberException("존재하지 않는 멤버입니다.");
+        }
+        return memberId;
     }
 }
