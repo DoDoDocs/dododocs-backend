@@ -1,5 +1,6 @@
 package dododocs.dododocs.domain;
 
+import dododocs.dododocs.auth.exception.InvalidTokenException;
 import org.springframework.beans.factory.annotation.Value;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -47,7 +48,16 @@ public class JwtTokenProvider {
 
             claims.getBody().getExpiration().before(new Date());
         } catch (JwtException | IllegalArgumentException e) {
-
+            throw new InvalidTokenException("변조되었거나 만료된 토큰입니다.");
         }
+    }
+
+    public Long getMemberId(final String token) {
+        return Long.parseLong(Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject());
     }
 }

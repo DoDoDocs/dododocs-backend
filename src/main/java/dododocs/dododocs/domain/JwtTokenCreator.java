@@ -14,4 +14,10 @@ public class JwtTokenCreator {
         final String accessToken = jwtTokenProvider.createAccessToken(memberId);
         return accessToken;
     }
+
+
+    public Long extractMemberId(final String accessToken) {
+        jwtTokenProvider.validateToken(accessToken);
+        return jwtTokenProvider.getMemberId(accessToken);
+    }
 }
