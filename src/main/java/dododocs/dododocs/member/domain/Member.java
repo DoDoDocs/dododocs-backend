@@ -14,4 +14,8 @@ public class Member {
 
     @Column(name = "email")
     private String email;
+
+    public Member(final String email) {
+        this.email = email;
+    }
 }

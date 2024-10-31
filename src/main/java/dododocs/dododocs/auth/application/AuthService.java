@@ -39,7 +39,7 @@ public class AuthService {
     }
 
     public Member findOrCreateMember(final GithubOAuthMember githubOAuthmember) {
-        final String email = oAuthmember.getEmail();
+        final String email = githubOAuthmember.getEmail();
 
         if(memberRepository.existsByEmail(email)) {
             memberRepository.save(generateMember(githubOAuthmember));
