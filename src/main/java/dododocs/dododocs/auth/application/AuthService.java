@@ -49,6 +49,6 @@ public class AuthService {
     }
 
     private Member generateMember(final GithubOAuthMember githubOAuthMember) {
-        return new Member(githubOAuthMember.getEmail());
+        return new Member(githubOAuthMember.getEmail(), githubOAuthMember.getName());
     }
 }

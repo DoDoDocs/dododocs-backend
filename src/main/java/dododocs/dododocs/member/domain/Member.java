@@ -15,7 +15,14 @@ public class Member {
     @Column(name = "email")
     private String email;
 
-    public Member(final String email) {
+    @Column(name = "name")
+    private String name;
+
+    protected Member() {
+    }
+
+    public Member(final String email, final String name) {
         this.email = email;
+        this.name = name;
     }
 }
