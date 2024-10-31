@@ -25,11 +25,11 @@ logging:
               BasicBinder: TRACE
 oauth:
   github:
-    authorize_uri: https://kauth.kakao.com/oauth/authorize
-    redirect_uri: http://localhost:3000/callback/kakao
+    authorize_uri: https://github.com/login/oauth/authorize
+    redirect_uri: http://localhost:3000/callback/github
     client_secret: secret_secret_secret_secret
-    token_uri: https://kauth.kakao.com/oauth/token
-    user_uri: https://kapi.kakao.com/v2/user/me
+    token_uri: https://github.com/login/oauth/access_token
+    user_uri: https://api.github.com/user
     client_id: 12345678_12345678_12345678_12345678
 
 security:
