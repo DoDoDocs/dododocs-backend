@@ -35,54 +35,12 @@ public class AnalyzeController {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
         try (ZipOutputStream zipOut = new ZipOutputStream(byteArrayOutputStream)) {
-            // GitHub API에서 특정 폴더의 파일 목록을 가져옴
             String owner = "msung99";
             String repo = "Gatsby-Starter-Haon";
             String path = ""; // 예: src/main/resources
-            String url = githubApiUrl.replace("{owner}", owner)
-                    .replace("{repo}", repo)
-                    .replace("{path}", path);
-
-            // API 호출
-            Object response = restTemplate.getForObject(url, Object.class);
-            System.out.println("API 응답 데이터: " + response);  // 응답 데이터 로그 추가
-
-            // 응답이 배열인지 확인하고 처리
-            if (response instanceof List) {
-                List<Map<String, Object>> fileList = objectMapper.convertValue(response, new TypeReference<List<Map<String, Object>>>() {});
-
-                // 파일 목록이 비어있는지 확인
-                if (fileList.isEmpty()) {
-                    System.out.println("파일 목록이 비어 있습니다.");
-                } else {
-                    System.out.println("파일 목록이 성공적으로 로드되었습니다.");
-                }
-
-                for (Map<String, Object> fileData : fileList) {
-                    String downloadUrl = (String) fileData.get("download_url");
-                    String fileName = (String) fileData.get("name");
-
-                    // downloadUrl이 null인지 확인
-                    if (downloadUrl != null) {
-                        System.out.println("Adding file to ZIP: " + fileName + " from " + downloadUrl); // 디버깅 로그
-                        try (InputStream inputStream = new URL(downloadUrl).openStream()) {
-                            zipOut.putNextEntry(new ZipEntry(fileName));
-                            inputStream.transferTo(zipOut);
-                            zipOut.closeEntry();
-                        } catch (Exception e) {
-                            System.err.println("파일을 추가하는 중 오류 발생: " + fileName);
-                            e.printStackTrace();
-                        }
-                    } else {
-                        System.out.println("download_url is null for file: " + fileName);
-                    }
-                }
-            } else {
-                System.out.println("응답이 파일 목록이 아닙니다.");
-            }
+            addFolderToZip(owner, repo, path, zipOut, "");
         }
 
-        // ByteArrayResource로 변환하여 HTTP 응답으로 반환
         ByteArrayResource resource = new ByteArrayResource(byteArrayOutputStream.toByteArray());
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"github_folder.zip\"");
@@ -92,4 +50,41 @@ public class AnalyzeController {
                 .contentLength(resource.contentLength())
                 .body(resource);
     }
+
+    private void addFolderToZip(String owner, String repo, String path, ZipOutputStream zipOut, String parentPath) throws Exception {
+        String url = githubApiUrl.replace("{owner}", owner)
+                .replace("{repo}", repo)
+                .replace("{path}", path);
+
+        Object response = restTemplate.getForObject(url, Object.class);
+
+        if (response instanceof List) {
+            List<Map<String, Object>> fileList = objectMapper.convertValue(response, new TypeReference<List<Map<String, Object>>>() {});
+
+            for (Map<String, Object> fileData : fileList) {
+                String type = (String) fileData.get("type");
+                String name = (String) fileData.get("name");
+                String downloadUrl = (String) fileData.get("download_url");
+                String filePath = parentPath + name;
+
+                if ("file".equals(type) && downloadUrl != null) {
+                    System.out.println("Adding file to ZIP: " + filePath + " from " + downloadUrl);
+                    try (InputStream inputStream = new URL(downloadUrl).openStream()) {
+                        zipOut.putNextEntry(new ZipEntry(filePath));
+                        inputStream.transferTo(zipOut);
+                        zipOut.closeEntry();
+                    } catch (Exception e) {
+                        System.err.println("파일을 추가하는 중 오류 발생: " + filePath);
+                        e.printStackTrace();
+                    }
+                } else if ("dir".equals(type)) {
+                    System.out.println("Entering directory: " + filePath);
+                    addFolderToZip(owner, repo, path + "/" + name, zipOut, filePath + "/");
+                }
+            }
+        } else {
+            System.out.println("응답이 파일 목록이 아닙니다.");
+        }
+    }
 }
+
