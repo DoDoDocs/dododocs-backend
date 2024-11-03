@@ -1,6 +1,8 @@
 
 package dododocs.dododocs.analyze.presentation;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dododocs.dododocs.analyze.application.AnalyzeService;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -15,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -25,35 +28,48 @@ public class AnalyzeController {
 
     private final RestTemplate restTemplate = new RestTemplate();
     private final String githubApiUrl = "https://api.github.com/repos/{owner}/{repo}/contents/{path}";
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @GetMapping("/github-zip")
     public ResponseEntity<Resource> downloadGithubFolderAsZip() throws Exception {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
-        // zip 파일에 대한 ZipOutputStream 생성
         try (ZipOutputStream zipOut = new ZipOutputStream(byteArrayOutputStream)) {
             // GitHub API에서 특정 폴더의 파일 목록을 가져옴
             String owner = "msung99";
             String repo = "Gatsby-Starter-Haon";
-            String path = "gatsby-config.js"; // ex) src/main/resources
+            String path = "src"; // 예: src/main/resources
             String url = githubApiUrl.replace("{owner}", owner)
                     .replace("{repo}", repo)
                     .replace("{path}", path);
 
             // API 호출
-            var response = restTemplate.getForObject(url, Object[].class);
+            Object response = restTemplate.getForObject(url, Object.class);
 
-            // 각 파일에 대해 다운로드 및 압축 추가
-            for (Object file : response) {
-                var fileData = (Map<String, Object>) file;
-                String downloadUrl = (String) fileData.get("download_url");
-                String fileName = (String) fileData.get("name");
+            // 응답이 배열인지 확인하고 처리
+            if (response instanceof List<?>) {
+                List<Map<String, Object>> fileList = objectMapper.convertValue(response, new TypeReference<List<Map<String, Object>>>() {});
 
-                try (InputStream inputStream = new URL(downloadUrl).openStream()) {
-                    zipOut.putNextEntry(new ZipEntry(fileName));
-                    inputStream.transferTo(zipOut);
-                    zipOut.closeEntry();
+                for (Map<String, Object> fileData : fileList) {
+                    String downloadUrl = (String) fileData.get("download_url");
+                    String fileName = (String) fileData.get("name");
+
+                    // downloadUrl이 null인지 확인
+                    if (downloadUrl != null) {
+                        try (InputStream inputStream = new URL(downloadUrl).openStream()) {
+                            zipOut.putNextEntry(new ZipEntry(fileName));
+                            inputStream.transferTo(zipOut);
+                            zipOut.closeEntry();
+                        } catch (Exception e) {
+                            System.err.println("파일을 추가하는 중 오류 발생: " + fileName);
+                            e.printStackTrace();
+                        }
+                    } else {
+                        System.out.println("download_url is null for file: " + fileName);
+                    }
                 }
+            } else {
+                System.out.println("응답이 파일 목록이 아닙니다.");
             }
         }
 
