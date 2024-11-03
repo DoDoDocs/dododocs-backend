@@ -38,17 +38,25 @@ public class AnalyzeController {
             // GitHub API에서 특정 폴더의 파일 목록을 가져옴
             String owner = "msung99";
             String repo = "Gatsby-Starter-Haon";
-            String path = "src"; // 예: src/main/resources
+            String path = ""; // 예: src/main/resources
             String url = githubApiUrl.replace("{owner}", owner)
                     .replace("{repo}", repo)
                     .replace("{path}", path);
 
             // API 호출
             Object response = restTemplate.getForObject(url, Object.class);
+            System.out.println("API 응답 데이터: " + response);  // 응답 데이터 로그 추가
 
             // 응답이 배열인지 확인하고 처리
-            if (response instanceof List<?>) {
+            if (response instanceof List) {
                 List<Map<String, Object>> fileList = objectMapper.convertValue(response, new TypeReference<List<Map<String, Object>>>() {});
+
+                // 파일 목록이 비어있는지 확인
+                if (fileList.isEmpty()) {
+                    System.out.println("파일 목록이 비어 있습니다.");
+                } else {
+                    System.out.println("파일 목록이 성공적으로 로드되었습니다.");
+                }
 
                 for (Map<String, Object> fileData : fileList) {
                     String downloadUrl = (String) fileData.get("download_url");
@@ -56,6 +64,7 @@ public class AnalyzeController {
 
                     // downloadUrl이 null인지 확인
                     if (downloadUrl != null) {
+                        System.out.println("Adding file to ZIP: " + fileName + " from " + downloadUrl); // 디버깅 로그
                         try (InputStream inputStream = new URL(downloadUrl).openStream()) {
                             zipOut.putNextEntry(new ZipEntry(fileName));
                             inputStream.transferTo(zipOut);
