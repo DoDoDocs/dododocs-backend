@@ -5,8 +5,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dododocs.dododocs.analyze.application.AnalyzeService;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,13 +32,13 @@ public class AnalyzeController {
     private final String githubApiUrl = "https://api.github.com/repos/{owner}/{repo}/contents/{path}";
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    @GetMapping("/github-zip")
+    @GetMapping("/github-folder")
     public ResponseEntity<Resource> downloadGithubFolderAsZip() throws Exception {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
         try (ZipOutputStream zipOut = new ZipOutputStream(byteArrayOutputStream)) {
             String owner = "msung99";
-            String repo = "Gatsby-Starter-Haon";
+            String repo = "inp";
             String path = ""; // 예: src/main/resources
             addFolderToZip(owner, repo, path, zipOut, "");
         }
@@ -85,6 +87,28 @@ public class AnalyzeController {
         } else {
             System.out.println("응답이 파일 목록이 아닙니다.");
         }
+    }
+
+    @GetMapping("/github-repo-zip")
+    public ResponseEntity<Resource> downloadGithubRepositoryAsZip() throws Exception {
+        String owner = "msung99";   // GitHub 사용자명 또는 조직명
+        String repo = "Gatsby-Starter-Haon";   // 레포지토리 이름
+        String branch = "main";      // 예: main
+
+        String downloadUrl = String.format("https://github.com/%s/%s/archive/refs/heads/%s.zip", owner, repo, branch);
+
+        // URL에서 InputStream 가져오기
+        InputStream inputStream = new URL(downloadUrl).openStream();
+        InputStreamResource resource = new InputStreamResource(inputStream);
+
+        // HTTP 헤더 설정
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + repo + "-" + branch + ".zip\"");
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(resource);
     }
 }
 
