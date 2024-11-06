@@ -27,7 +27,7 @@ oauth:
   github:
     authorize_uri: https://github.com/login/oauth/authorize
     redirect_uri: http://localhost:3000/callback/github
-    client_secret: secret_secret_secret_secret
+    client_secret: 956682ca8f12648d6c8715460efbf0207578ed37
     token_uri: https://github.com/login/oauth/access_token
     user_uri: https://api.github.com/user
     client_id: Ov23li8DXFjxGqJaQPfq

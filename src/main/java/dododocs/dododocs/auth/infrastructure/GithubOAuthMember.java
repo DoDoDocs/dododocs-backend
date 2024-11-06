@@ -8,7 +8,7 @@ public class GithubOAuthMember {
     @JsonProperty("email")
     private String email;
 
-    @JsonProperty("login")
+    @JsonProperty("name")
     private String name;
 
     public GithubOAuthMember(final String email, final String name) {

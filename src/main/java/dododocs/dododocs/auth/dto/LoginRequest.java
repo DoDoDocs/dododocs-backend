@@ -4,7 +4,9 @@ import lombok.Getter;
 
 @Getter
 public class LoginRequest {
-    private final String code;
+    private String code;
+
+    private LoginRequest() {}
 
     public LoginRequest(final String code) {
         this.code = code;
