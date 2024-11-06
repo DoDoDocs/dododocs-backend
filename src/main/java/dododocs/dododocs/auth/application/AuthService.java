@@ -7,6 +7,8 @@ import dododocs.dododocs.auth.domain.GithubOAuthUriProvider;
 import dododocs.dododocs.auth.domain.JwtTokenCreator;
 import dododocs.dododocs.auth.domain.repository.MemberRepository;
 import dododocs.dododocs.member.domain.Member;
+import io.micrometer.core.instrument.config.MeterFilter;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,15 +20,17 @@ public class AuthService {
     private final JwtTokenCreator jwtTokenCreator;
     private final GithubOAuthClient githubOAuthClient;
     private final MemberRepository memberRepository;
+    private final MeterFilter metricsHttpServerUriTagFilter;
 
     public AuthService(final GithubOAuthUriProvider oAuthUriProvider,
                        final JwtTokenCreator jwtTokenCreator,
-                        final GithubOAuthClient githubOAuthClient,
-                       final MemberRepository memberRepository) {
+                       final GithubOAuthClient githubOAuthClient,
+                       final MemberRepository memberRepository, @Qualifier("metricsHttpServerUriTagFilter") MeterFilter metricsHttpServerUriTagFilter) {
         this.oAuthUriProvider = oAuthUriProvider;
         this.jwtTokenCreator = jwtTokenCreator;
         this.githubOAuthClient = githubOAuthClient;
         this.memberRepository = memberRepository;
+        this.metricsHttpServerUriTagFilter = metricsHttpServerUriTagFilter;
     }
 
     public String generateUri() {
@@ -43,7 +47,7 @@ public class AuthService {
     public Member findOrCreateMember(final GithubOAuthMember githubOAuthmember) {
         final String email = githubOAuthmember.getEmail();
 
-        if(memberRepository.existsByEmail(email)) {
+        if(!memberRepository.existsByEmail(email)) {
             memberRepository.save(generateMember(githubOAuthmember));
         }
         final Member foundMember = memberRepository.findByEmail(email);
