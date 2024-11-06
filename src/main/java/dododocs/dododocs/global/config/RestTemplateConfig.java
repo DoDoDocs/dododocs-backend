@@ -1,4 +1,4 @@
-package dododocs.dododocs.global;
+package dododocs.dododocs.global.config;
 
 
 import org.springframework.context.annotation.Bean;
