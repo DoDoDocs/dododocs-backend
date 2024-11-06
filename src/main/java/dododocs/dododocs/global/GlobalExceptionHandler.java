@@ -1,6 +1,8 @@
 package dododocs.dododocs.global;
 
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -8,15 +10,29 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
-@Slf4j
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<ExceptionResponse> handleRunTimeException(RuntimeException e) {
-        log.error(e.getMessage(), e);
+    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
+    @ExceptionHandler({
+           RuntimeException.class
+    })
+    public ResponseEntity<ExceptionResponse> handleIBadRequestException(final RuntimeException e) {
+        logger.error(e.getMessage(), e);
         ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
         return ResponseEntity.badRequest().body(exceptionResponse);
+    }
+    @ExceptionHandler({
+            NoResourceFoundException.class
+    })
+    public ResponseEntity<ExceptionResponse> handleNoResourceFoundException(final NoResourceFoundException e) {
+        logger.error(e.getMessage(), e);
+        ExceptionResponse exceptionResponse = new ExceptionResponse("존재하지 않는 리소스 또는 URI 입니다.");
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exceptionResponse);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
@@ -38,8 +54,9 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ExceptionResponse> handleUnExpectedException(Exception e) {
-        log.error(e.getMessage(), e);
+    public ResponseEntity<ExceptionResponse> handleOverflowException(final Exception e) {
+        logger.error(e.getMessage(), e);
+
         return ResponseEntity.internalServerError()
                 .body(new ExceptionResponse("서버에 예기치 못한 오류가 발생했습니다. 관리자에게 문의하세요."));
     }
