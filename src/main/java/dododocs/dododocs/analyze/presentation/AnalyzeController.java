@@ -27,10 +27,14 @@ import java.util.zip.ZipOutputStream;
 @RestController
 @RequestMapping("/api/download")
 public class AnalyzeController {
-
+    private final AnalyzeService analyzeService;
     private final RestTemplate restTemplate = new RestTemplate();
     private final String githubApiUrl = "https://api.github.com/repos/{owner}/{repo}/contents/{path}";
     private final ObjectMapper objectMapper = new ObjectMapper();
+
+    public AnalyzeController(final AnalyzeService analyzeService) {
+        this.analyzeService = analyzeService;
+    }
 
     @GetMapping("/github-folder")
     public ResponseEntity<Resource> downloadGithubFolderAsZip() throws Exception {
@@ -38,7 +42,7 @@ public class AnalyzeController {
 
         try (ZipOutputStream zipOut = new ZipOutputStream(byteArrayOutputStream)) {
             String owner = "msung99";
-            String repo = "inp";
+            String repo = "Gatsby-Starter-Haon";
             String path = ""; // 예: src/main/resources
             addFolderToZip(owner, repo, path, zipOut, "");
         }
@@ -91,9 +95,9 @@ public class AnalyzeController {
 
     @GetMapping("/github-repo-zip")
     public ResponseEntity<Resource> downloadGithubRepositoryAsZip() throws Exception {
-        String owner = "msung99";   // GitHub 사용자명 또는 조직명
-        String repo = "Gatsby-Starter-Haon";   // 레포지토리 이름
-        String branch = "main";      // 예: main
+        String owner = "msung99";   // => gitHub 사용자명 또는 조직명
+        String repo = "Gatsby-Starter-Haon";   // => 레포지토리 이름
+        String branch = "main";      // => main
 
         String downloadUrl = String.format("https://github.com/%s/%s/archive/refs/heads/%s.zip", owner, repo, branch);
 
@@ -104,6 +108,8 @@ public class AnalyzeController {
         // HTTP 헤더 설정
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + repo + "-" + branch + ".zip\"");
+
+        analyzeService.uploadZipToS3(repo);
 
         return ResponseEntity.ok()
                 .headers(headers)

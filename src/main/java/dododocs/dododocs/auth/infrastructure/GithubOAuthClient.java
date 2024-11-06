@@ -17,7 +17,6 @@ public class GithubOAuthClient {
     private final RestTemplate restTemplate;
     private final String redirectUri;
     private final String clientId;
-    private final String clientSecret;
     private final String tokenUri;
     private final String userUri;
     private final String grantType = "authorization_code";
@@ -25,13 +24,11 @@ public class GithubOAuthClient {
     public GithubOAuthClient(final RestTemplate restTemplate,
                              @Value("${oauth.github.redirect_uri}") final String redirectUri,
                              @Value("${oauth.github.client_id}") final String clientId,
-                             @Value("${oauth.github.client_secret}") final String clientSecret,
                              @Value("${oauth.github.token_uri}") final String tokenUri,
                              @Value("${oauth.github.user_uri}") final String userUri) {
         this.restTemplate = restTemplate;
         this.redirectUri = redirectUri;
         this.clientId = clientId;
-        this.clientSecret = clientSecret;
         this.tokenUri = tokenUri;
         this.userUri = userUri;
     }
@@ -62,11 +59,10 @@ public class GithubOAuthClient {
     private String requestGithubAccessToken(final String code) {
         final MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         final HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBasicAuth(clientId, clientSecret);
+        httpHeaders.setBasicAuth(clientId);
         httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
         params.add("grant_type", grantType);
-        params.add("client_secret", clientSecret);
         params.add("code", code);
         params.add("redirect_uri", redirectUri);
 

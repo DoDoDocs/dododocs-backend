@@ -30,7 +30,7 @@ oauth:
     client_secret: secret_secret_secret_secret
     token_uri: https://github.com/login/oauth/access_token
     user_uri: https://api.github.com/user
-    client_id: 12345678_12345678_12345678_12345678
+    client_id: Ov23li8DXFjxGqJaQPfq
 
 security:
   jwt:
@@ -39,3 +39,13 @@ security:
       expire_length:
         access_token: 36000000
         refresh_token: 36000000
+
+cloud:
+  aws:
+    s3:
+      bucket: haon-dododocs
+    stack.auto: false
+    region.static: ap-northeast-2
+    credentials:
+      accessKey:
+      secretKey:
