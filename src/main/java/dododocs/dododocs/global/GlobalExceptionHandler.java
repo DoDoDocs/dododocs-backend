@@ -15,5 +15,10 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(exceptionResponse);
     }
 
-
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ExceptionResponse> handleUnExpectedException(Exception e) {
+        log.error(e.getMessage(), e);
+        return ResponseEntity.internalServerError()
+                .body(new ExceptionResponse("서버에 예기치 못한 오류가 발생했습니다. 관리자에게 문의하세요."));
+    }
 }
