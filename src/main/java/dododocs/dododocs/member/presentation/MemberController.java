@@ -23,6 +23,7 @@ public class MemberController {
         for(String name : names) {
             System.out.println(name);
         }
+        System.out.println("size:" + names.size());
         return ResponseEntity.ok().build();
     }
 }
