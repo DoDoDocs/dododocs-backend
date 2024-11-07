@@ -8,6 +8,7 @@ import dododocs.dododocs.auth.infrastructure.GithubOAuthClient;
 import dododocs.dododocs.auth.presentation.AuthController;
 import dododocs.dododocs.auth.presentation.authentication.AuthenticationBearerExtractor;
 import dododocs.dododocs.member.application.MemberService;
+import dododocs.dododocs.member.presentation.MemberController;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -20,6 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureRestDocs
 @WebMvcTest({
         AuthController.class,
+        MemberController.class,
 })
 @Import(TestConfig.class)
 @ActiveProfiles("test")
