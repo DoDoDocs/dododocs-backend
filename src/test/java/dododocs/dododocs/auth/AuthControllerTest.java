@@ -30,7 +30,7 @@ public class AuthControllerTest extends ControllerTestConfig {
     @Test
     void generateSocialLoginLink() throws Exception {
         // given
-        given(authService.generateUri()).willReturn("qweqwe");
+        given(authService.generateUri()).willReturn("https://어쩌구저쩌구");
 
         // when, then
         mockMvc.perform(get("/api/auth/link"))
