@@ -33,7 +33,7 @@ jobs:
         run: |
           git remote add target https://$TARGET_REPO_TOKEN@github.com/42kko/fork_dodoBE.git
           git fetch target main || true # 타겟 레포지토리의 최신 변경 사항을 가져오기
-
+          git reset target/main # 타겟 레포지토리의 상태로 현재 브랜치를 동기화
           git add .
           git commit -m "Sync from source repository" || true # 커밋할 사항이 없을 경우 오류 무시
           git push target main -f # 강제 푸시
