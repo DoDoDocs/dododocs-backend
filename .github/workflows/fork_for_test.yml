@@ -18,6 +18,7 @@ jobs:
       - name: Set up Git user
         run: |
           git config --global user.name "42kko_syncbot"
+          git config --global user.email 42kko@example.com
           
       # .github/workflows 디렉토리 삭제
       - name: Remove workflows directory
