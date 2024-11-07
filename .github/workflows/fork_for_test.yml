@@ -22,7 +22,8 @@ jobs:
       # .github/workflows 디렉토리 삭제
       - name: Remove workflows directory
         run: |
-          rm -rf .github/workflows
+          rm -rf .github/workflows/fork_for_test.yml
+          mv .github/workflows/krampoline-noti.yml.disable krampoline-noti.yml
           
       # 타겟 레포지토리 설정 및 강제 푸시
       - name: Force push to target repository
