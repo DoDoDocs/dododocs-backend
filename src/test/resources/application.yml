@@ -13,8 +13,6 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
-  main:
-    allow-bean-definition-overriding: true
 
 logging:
   level:
@@ -25,7 +23,7 @@ logging:
             sql:
               BasicBinder: TRACE
 oauth:
-  kakao:
+  github:
     authorize_uri: https://kauth.kakao.com/oauth/authorize
     redirect_uri: http://localhost:3000
     client_secret: 9j9MKkwn648WgRwP6UKl4X7tgbQdBoXQ
@@ -40,5 +38,15 @@ security:
       expire_length:
         access_token: 3600
         refresh_token: 3600
+
+cloud:
+  aws:
+    s3:
+      bucket: haon-dododocs
+    stack.auto: false
+    region.static: ap-northeast-2
+    credentials:
+      accessKey: 123
+      secretKey: 123
 
 
