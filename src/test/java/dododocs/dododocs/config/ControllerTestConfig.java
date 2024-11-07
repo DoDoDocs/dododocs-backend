@@ -2,9 +2,12 @@ package dododocs.dododocs.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dododocs.dododocs.auth.application.AuthService;
+import dododocs.dododocs.auth.domain.JwtTokenCreator;
+import dododocs.dododocs.auth.domain.JwtTokenProvider;
 import dododocs.dododocs.auth.infrastructure.GithubOAuthClient;
 import dododocs.dododocs.auth.presentation.AuthController;
 import dododocs.dododocs.auth.presentation.authentication.AuthenticationBearerExtractor;
+import dododocs.dododocs.member.application.MemberService;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -35,4 +38,10 @@ public abstract class ControllerTestConfig {
 
     @MockBean
     protected AuthenticationBearerExtractor authenticationBearerExtractor;
+
+    @MockBean
+    protected MemberService memberService;
+
+    @MockBean
+    protected JwtTokenCreator jwtTokenCreator;
 }
