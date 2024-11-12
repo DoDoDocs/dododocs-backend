@@ -42,4 +42,9 @@ public class ApiTestController {
     public ResponseEntity<Member> findMember() {
         return ResponseEntity.ok(memberRepository.findById(1L).orElse(null));
     }
+
+    @GetMapping("/proxy")
+    public ResponseEntity<Void> findProxy() {
+        return ResponseEntity.ok().build();
+    }
 }
