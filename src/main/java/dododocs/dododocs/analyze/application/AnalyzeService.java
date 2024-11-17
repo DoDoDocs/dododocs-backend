@@ -38,7 +38,7 @@ public class AnalyzeService {
         String downloadUrl = String.format("https://github.com/%s/%s/archive/refs/heads/%s.zip", ownerName, repoName, branchName);
 
         // ZIP 파일을 임시 디렉토리에 저장
-        File tempFile = File.createTempFile(repoName + "-" + branchName, ".zip");
+        File tempFile = File.createTempFile(repoName, ".zip");
         downloadFileFromUrl(downloadUrl, tempFile);
 
         // S3에 업로드
