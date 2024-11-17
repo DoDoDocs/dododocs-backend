@@ -20,6 +20,11 @@ public class MemberOrganization {
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false)
+    @JoinColumn(name = "member_id")
     private Member member;
+
+    public MemberOrganization(final Member member, final String name) {
+        this.member = member;
+        this.name = name;
+    }
 }
