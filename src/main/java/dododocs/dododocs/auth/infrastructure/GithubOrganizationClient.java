@@ -2,6 +2,7 @@ package dododocs.dododocs.auth.infrastructure;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dododocs.dododocs.analyze.domain.repository.MemberOrganizationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -13,10 +14,10 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Component
 public class GithubOrganizationClient {
-
+    private final MemberOrganizationRepository memberOrganizationRepository;
     private final RestTemplate restTemplate;
 
-    public void printOrganizations(String username) throws Exception {
+    public void saveMemberOrganizationNames(String username) throws Exception {
         String url = String.format("https://api.github.com/users/%s/orgs", username);
 
         // API 요청
@@ -30,6 +31,7 @@ public class GithubOrganizationClient {
         System.out.println("Organizations for user: " + username);
         for (Map<String, Object> org : orgs) {
             System.out.println(" - " + org.get("login"));
+            // memberOrganizationRepository.save()
         }
     }
 }
