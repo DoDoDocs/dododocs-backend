@@ -4,6 +4,9 @@ package dododocs.dododocs.analyze.presentation;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dododocs.dododocs.analyze.application.AnalyzeService;
+import dododocs.dododocs.analyze.dto.UploadGitRepoContentToS3Request;
+import dododocs.dododocs.auth.dto.Accessor;
+import dododocs.dododocs.auth.presentation.authentication.Authentication;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -91,7 +94,8 @@ public class AnalyzeController {
     }
 
     @GetMapping("/upload/s3")
-    public String uploadGithubToS3() {
+    public String uploadGithubToS3(@Authentication final Accessor accessor,
+                                   final UploadGitRepoContentToS3Request uploadToS3Request) {
 
         String owner = "msung99";   // => gitHub 사용자명 또는 조직명
         String repo = "Gatsby-Starter-Haon";   // => 레포지토리 이름
@@ -99,8 +103,13 @@ public class AnalyzeController {
         String bucketName = "haon-dododocs";
         String s3Key = "open-source";
 
-        analyzeService.uploadGithubRepoToS3(owner, repo, branch, bucketName, s3Key);
-        return "GitHub repository successfully uploaded to S3!";
+        try {
+            analyzeService.uploadGithubRepoToS3(accessor.getId(), uploadToS3Request.getRepositoryName(), uploadToS3Request.getBranchName(), bucketName, s3Key);
+            return "GitHub repository successfully uploaded to S3!";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Failed to upload GitHub repository to S3: " + e.getMessage();
+        }
     }
 }
 
