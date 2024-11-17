@@ -22,18 +22,13 @@ public class GithubOrganizationClient {
     public void saveMemberOrganizationNames(final Member member, final String username) throws Exception {
         String url = String.format("https://api.github.com/users/%s/orgs", username);
 
-        // API 요청
         ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
 
-        // JSON 응답 파싱
         ObjectMapper objectMapper = new ObjectMapper();
         List<Map<String, Object>> orgs = objectMapper.readValue(response.getBody(), new TypeReference<List<Map<String, Object>>>() {});
 
-        // 조직 이름 출력
-        System.out.println("Organizations for user: " + username);
         for (Map<String, Object> org : orgs) {
             String name = (String) org.get("login");
-            System.out.println("name:" + name);
             memberOrganizationRepository.save(new MemberOrganization(member, name));
         }
     }
