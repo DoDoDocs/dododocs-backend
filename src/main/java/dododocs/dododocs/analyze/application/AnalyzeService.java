@@ -33,7 +33,7 @@ public class AnalyzeService {
                 .orElseThrow(NoExistMemberException::new);
 
         String ownerName = member.getOriginName();
-        String bucketName = ownerName + "-" + repoName;
+        String bucketDetailName = ownerName + "-" + repoName;
 
         String downloadUrl = String.format("https://github.com/%s/%s/archive/refs/heads/%s.zip", ownerName, repoName, branchName);
 
@@ -42,7 +42,7 @@ public class AnalyzeService {
         downloadFileFromUrl(downloadUrl, tempFile);
 
         // S3에 업로드
-        amazonS3Client.putObject(bucketName, bucketName, tempFile);
+        amazonS3Client.putObject("haon-dododocs", bucketDetailName, tempFile);
 
         // 업로드 후 임시 파일 삭제
         tempFile.delete();
