@@ -1,4 +1,4 @@
-package dododocs.dododocs.analyze;
+package dododocs.dododocs.analyze.domain;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
