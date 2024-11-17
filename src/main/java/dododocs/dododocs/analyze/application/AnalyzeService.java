@@ -1,6 +1,7 @@
 package dododocs.dododocs.analyze.application;
 
 import com.amazonaws.services.s3.AmazonS3Client;
+import dododocs.dododocs.analyze.domain.repository.MemberOrganizationRepository;
 import dododocs.dododocs.auth.domain.repository.MemberRepository;
 import dododocs.dododocs.auth.exception.NoExistMemberException;
 import dododocs.dododocs.member.domain.Member;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URLConnection;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -25,6 +27,7 @@ import java.util.zip.ZipOutputStream;
 public class AnalyzeService {
     private final MemberRepository memberRepository;
     private final AmazonS3Client amazonS3Client;
+    private final MemberOrganizationRepository memberOrganizationRepository;
 
     // GitHub 레포지토리를 ZIP 파일로 가져와 S3에 업로드
     public void uploadGithubRepoToS3(final long memberId, String repoName, String branchName) throws IOException {
@@ -61,5 +64,9 @@ public class AnalyzeService {
                 outputStream.write(buffer, 0, bytesRead);
             }
         }
+    }
+
+    private List<String> findOrganizationNames(final Member member) {
+       return memberOrganizationRepository.findOrganizationNamesByMember(member);
     }
 }
