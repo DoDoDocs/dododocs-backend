@@ -90,31 +90,7 @@ public class AnalyzeController {
         }
     }
 
-    /* @GetMapping("/github-repo-zip")
-    public ResponseEntity<Resource> downloadGithubRepositoryAsZip() throws Exception {
-        String owner = "msung99";   // => gitHub 사용자명 또는 조직명
-        String repo = "Gatsby-Starter-Haon";   // => 레포지토리 이름
-        String branch = "main";      // => main
-
-        String downloadUrl = String.format("https://github.com/%s/%s/archive/refs/heads/%s.zip", owner, repo, branch);
-
-        // URL에서 InputStream 가져오기
-        InputStream inputStream = new URL(downloadUrl).openStream();
-        InputStreamResource resource = new InputStreamResource(inputStream);
-
-        // HTTP 헤더 설정
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + repo + "-" + branch + ".zip\"");
-
-        analyzeService.uploadZipToS3(repo);
-
-        return ResponseEntity.ok()
-                .headers(headers)
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .body(resource);
-    } */
-
-    @GetMapping("/upload-github-to-s3")
+    @GetMapping("/upload/s3")
     public String uploadGithubToS3() {
 
         String owner = "msung99";   // => gitHub 사용자명 또는 조직명
@@ -123,13 +99,8 @@ public class AnalyzeController {
         String bucketName = "haon-dododocs";
         String s3Key = "open-source";
 
-        try {
-            analyzeService.uploadGithubRepoToS3(owner, repo, branch, bucketName, s3Key);
-            return "GitHub repository successfully uploaded to S3!";
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "Failed to upload GitHub repository to S3: " + e.getMessage();
-        }
+        analyzeService.uploadGithubRepoToS3(owner, repo, branch, bucketName, s3Key);
+        return "GitHub repository successfully uploaded to S3!";
     }
 }
 
