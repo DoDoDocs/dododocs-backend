@@ -10,10 +10,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.ByteArrayOutputStream;
@@ -93,7 +90,7 @@ public class AnalyzeController {
         }
     }
 
-    @GetMapping("/github-repo-zip")
+    /* @GetMapping("/github-repo-zip")
     public ResponseEntity<Resource> downloadGithubRepositoryAsZip() throws Exception {
         String owner = "msung99";   // => gitHub 사용자명 또는 조직명
         String repo = "Gatsby-Starter-Haon";   // => 레포지토리 이름
@@ -115,6 +112,24 @@ public class AnalyzeController {
                 .headers(headers)
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(resource);
+    } */
+
+    @GetMapping("/upload-github-to-s3")
+    public String uploadGithubToS3() {
+
+        String owner = "msung99";   // => gitHub 사용자명 또는 조직명
+        String repo = "Gatsby-Starter-Haon";   // => 레포지토리 이름
+        String branch = "main";      // => main
+        String bucketName = "haon-dododocs";
+        String s3Key = "open-source";
+
+        try {
+            analyzeService.uploadGithubRepoToS3(owner, repo, branch, bucketName, s3Key);
+            return "GitHub repository successfully uploaded to S3!";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Failed to upload GitHub repository to S3: " + e.getMessage();
+        }
     }
 }
 
