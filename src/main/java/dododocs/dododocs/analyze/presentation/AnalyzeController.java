@@ -25,7 +25,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 @RestController
-@RequestMapping("/api/download")
+@RequestMapping("/api")
 public class AnalyzeController {
     private final AnalyzeService analyzeService;
 

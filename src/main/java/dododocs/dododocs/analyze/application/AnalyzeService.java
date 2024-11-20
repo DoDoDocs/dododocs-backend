@@ -2,6 +2,8 @@ package dododocs.dododocs.analyze.application;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import dododocs.dododocs.analyze.domain.repository.MemberOrganizationRepository;
+import dododocs.dododocs.analyze.dto.ExternalAiZipAnalyzeRequest;
+import dododocs.dododocs.analyze.infrastructure.ExternalAiZipAnalyzeClient;
 import dododocs.dododocs.auth.domain.repository.MemberRepository;
 import dododocs.dododocs.auth.exception.NoExistMemberException;
 import dododocs.dododocs.member.domain.Member;
@@ -25,12 +27,13 @@ import java.util.zip.ZipOutputStream;
 @RequiredArgsConstructor
 @Service
 public class AnalyzeService {
+    private final ExternalAiZipAnalyzeClient externalAiZipAnalyzeClient;
     private final MemberRepository memberRepository;
     private final AmazonS3Client amazonS3Client;
     private final MemberOrganizationRepository memberOrganizationRepository;
 
     // GitHub 레포지토리를 ZIP 파일로 가져와 S3에 업로드
-    public void uploadGithubRepoToS3(final long memberId, String repoName, String branchName) throws IOException {
+    public void uploadGithubRepoToS3(final long memberId, String repoName, String branchName) {
         // Member를 조회
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(NoExistMemberException::new);
@@ -50,9 +53,8 @@ public class AnalyzeService {
             }
         }
 
-        if (!success) {
-            throw new IllegalArgumentException("Could not find repository " + repoName + " under any owner.");
-        }
+        String s3Key = ownerName + "-" + repoName;
+        externalAiZipAnalyzeClient.requestAiZipDownloadAndAnalyze(new ExternalAiZipAnalyzeRequest(s3Key, repoName, false));
     }
 
     // 특정 소유자(개인 또는 조직)에서 레포지토리를 찾아 업로드 시도
