@@ -58,6 +58,8 @@ public class AnalyzeService {
         }
 
         String s3Key = ownerName + "-" + repoName;
+        String repoUrl = String.format("https://github.com/%s/%s", ownerName, repoName);
+
         ExternalAiZipAnalyzeResponse externalAiZipAnalyzeResponse =
                 externalAiZipAnalyzeClient.requestAiZipDownloadAndAnalyze(new ExternalAiZipAnalyzeRequest
                         (s3Key, String.format("https://github.com/%s/%s", ownerName, repoName), false));
@@ -73,6 +75,7 @@ public class AnalyzeService {
                 new RepoAnalyze(repoName,
                         externalAiZipAnalyzeResponse.getReadMeS3Key(),
                         externalAiZipAnalyzeResponse.getDocsS3Key(),
+                        repoUrl,
                         member)
         );
     }

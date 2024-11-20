@@ -21,6 +21,9 @@ public class RepoAnalyze {
     @Column(name = "docs_key", nullable = true) // docs key 는 null 이 허용된다. (Java 파일이 없는 경우 null 이 나올 수 있음)
     private String docsKey;
 
+    @Column(name = "repo_url", nullable = false)
+    private String repoUrl;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
@@ -28,10 +31,11 @@ public class RepoAnalyze {
     protected RepoAnalyze() {
     }
 
-    public RepoAnalyze(final String repositoryName, final String readMeKey, final String docsKey, final Member member) {
+    public RepoAnalyze(final String repositoryName, final String readMeKey, final String docsKey, final String repoUrl, final Member member) {
         this.repositoryName = repositoryName;
         this.readMeKey = readMeKey;
         this.docsKey = docsKey;
+        this.repoUrl = repoUrl;
         this.member = member;
     }
 }
