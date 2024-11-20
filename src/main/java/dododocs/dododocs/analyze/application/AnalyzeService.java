@@ -3,6 +3,7 @@ package dododocs.dododocs.analyze.application;
 import com.amazonaws.services.s3.AmazonS3Client;
 import dododocs.dododocs.analyze.domain.repository.MemberOrganizationRepository;
 import dododocs.dododocs.analyze.dto.ExternalAiZipAnalyzeRequest;
+import dododocs.dododocs.analyze.dto.ExternalAiZipAnalyzeResponse;
 import dododocs.dododocs.analyze.infrastructure.ExternalAiZipAnalyzeClient;
 import dododocs.dododocs.auth.domain.repository.MemberRepository;
 import dododocs.dododocs.auth.exception.NoExistMemberException;
@@ -54,7 +55,16 @@ public class AnalyzeService {
         }
 
         String s3Key = ownerName + "-" + repoName;
-        externalAiZipAnalyzeClient.requestAiZipDownloadAndAnalyze(new ExternalAiZipAnalyzeRequest(s3Key, repoName, false));
+        ExternalAiZipAnalyzeResponse externalAiZipAnalyzeResponse =
+                externalAiZipAnalyzeClient.requestAiZipDownloadAndAnalyze(new ExternalAiZipAnalyzeRequest(s3Key, repoName, false));
+
+        // 1. readMeS3Key / 2. docsS3Key
+
+        // DB 에 레포 정보 저장할 엔티티 생성
+        // 1. readmeKey (AI 가 만들어준 s3 내의 레포 분석 결과인 ZIP 파일이 어디있는지)
+        // 2. docsS3key (AI 가 만들어준 s3 내의 레포 분석 결과인 ZIP 파일이 어디있는지)
+        // 3. repositoryName (ex. Gatsby-Starter-Haon)
+        // 4. ownerName (ex. msung99)
     }
 
     // 특정 소유자(개인 또는 조직)에서 레포지토리를 찾아 업로드 시도

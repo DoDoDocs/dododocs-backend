@@ -46,5 +46,10 @@ public class AnalyzeController {
             return "Failed to upload GitHub repository to S3: " + e.getMessage();
         }
     }
+
+    @GetMapping("/download/s3")
+    public void downloadAIAnalyzeResultFromS3(@Authentication final Accessor accessor) {
+        
+    }
 }
 
