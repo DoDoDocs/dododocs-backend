@@ -3,11 +3,16 @@ package dododocs.dododocs.analyze.application;
 import com.amazonaws.services.s3.AmazonS3Client;
 import dododocs.dododocs.analyze.domain.RepoAnalyze;
 import dododocs.dododocs.analyze.domain.repository.RepoAnalyzeRepository;
+import dododocs.dododocs.analyze.dto.DownloadAiAnalyzeResponse;
 import dododocs.dododocs.analyze.exception.NoExistRepoAnalyzeException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -18,7 +23,7 @@ public class DownloadFromS3Service {
     private final AmazonS3Client amazonS3Client;
     private final String bucketName = "haon-dododocs";
 
-    public void downloadAndProcessZip(final String repoName) throws IOException {
+    public DownloadAiAnalyzeResponse downloadAndProcessZip(final String repoName) throws IOException {
         final RepoAnalyze repoAnalyze = repoAnalyzeRepository.findByRepositoryName(repoName)
                 .orElseThrow(() -> new NoExistRepoAnalyzeException("레포지토리 정보가 존재하지 않습니다."));
 
@@ -30,12 +35,14 @@ public class DownloadFromS3Service {
         // 2. ZIP 파일 압축 해제
         File extractedDir = unzipFile(zipFile);
 
-        // 3. .md 파일 내용 출력
-        printMarkdownFiles(extractedDir);
+        // 3. .md 파일을 Map으로 변환하여 리턴
+        List<Map<String, String>> markdownFiles = collectMarkdownFiles(extractedDir);
 
         // 4. 임시 파일 삭제
         zipFile.delete();
         deleteDirectory(extractedDir);
+
+        return new DownloadAiAnalyzeResponse(markdownFiles);
     }
 
     private File downloadZipFromS3(String bucketName, String s3Key) throws IOException {
@@ -84,25 +91,34 @@ public class DownloadFromS3Service {
         return outputDir;
     }
 
-    private void printMarkdownFiles(File directory) throws IOException {
+    private List<Map<String, String>> collectMarkdownFiles(File directory) throws IOException {
+        List<Map<String, String>> markdownFiles = new ArrayList<>();
         File[] files = directory.listFiles();
+
         if (files != null) {
             for (File file : files) {
                 if (file.isDirectory()) {
-                    printMarkdownFiles(file); // 재귀적으로 하위 디렉토리 탐색
+                    markdownFiles.addAll(collectMarkdownFiles(file)); // 재귀적으로 하위 디렉토리 탐색
                 } else if (file.getName().endsWith(".md")) {
-                    System.out.println("File: " + file.getName());
-                    System.out.println("Content:");
-                    try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-                        String line;
-                        while ((line = reader.readLine()) != null) {
-                            System.out.println(line);
-                        }
-                    }
-                    System.out.println("-------------------------------");
+                    Map<String, String> fileData = new HashMap<>();
+                    fileData.put(file.getName(), readFileContent(file));
+                    markdownFiles.add(fileData);
                 }
             }
         }
+
+        return markdownFiles;
+    }
+
+    private String readFileContent(File file) throws IOException {
+        StringBuilder content = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                content.append(line).append(System.lineSeparator());
+            }
+        }
+        return content.toString();
     }
 
     private void deleteDirectory(File directory) {
