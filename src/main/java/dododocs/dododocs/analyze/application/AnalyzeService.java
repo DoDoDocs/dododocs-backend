@@ -80,10 +80,8 @@ public class AnalyzeService {
         // 4. ownerName (ex. msung99)
         repoAnalyzeRepository.save(
                 new RepoAnalyze(repoName,
-                        "kakao-25_moheng_README.md",
-                        "kakao-25_moheng_DOCS.zip",
-                        // externalAiZipAnalyzeResponse.getReadMeS3Key(),
-                        // externalAiZipAnalyzeResponse.getDocsS3Key(),
+                        externalAiZipAnalyzeResponse.getReadMeS3Key(),
+                        externalAiZipAnalyzeResponse.getDocsS3Key(),
                         repoUrl,
                         member)
         );
@@ -145,27 +143,54 @@ public class AnalyzeService {
         final Member member = memberRepository.findById(memberId)
                 .orElseThrow(NoExistMemberException::new);
 
-        final String ownerName = member.getOriginName();
+        // 개인 소유자로 먼저 시도
+        String ownerName = member.getOriginName();
+        RepositoryContentDto result = tryGetRepositoryContents(ownerName, repo, branch);
 
-        // GitHub ZIP 다운로드 URL
-        String zipUrl = String.format("https://github.com/%s/%s/archive/refs/heads/%s.zip", ownerName, repo, branch);
+        // 개인 소유에서 찾지 못하면 조직 소유로 검색
+        if (result == null) {
+            List<String> organizationNames = findOrganizationNames(member);
+            for (String orgName : organizationNames) {
+                result = tryGetRepositoryContents(orgName, repo, branch);
+                if (result != null) {
+                    break;
+                }
+            }
+        }
 
-        // 1. ZIP 파일 다운로드
-        File tempZipFile = File.createTempFile(repo, ".zip");
-        downloadFile(zipUrl, tempZipFile);
+        if (result == null) {
+            throw new IllegalArgumentException("Could not find repository " + repo + " under any owner.");
+        }
 
-        // 2. ZIP 파일 압축 해제
-        File tempDir = new File(tempZipFile.getParent(), repo);
-        unzip(tempZipFile, tempDir);
+        return result;
+    }
 
-        // 3. 폴더 및 파일 구조 생성
-        RepositoryContentDto root = parseFolder(tempDir);
+    // 특정 소유자(개인 또는 조직)에서 레포지토리를 가져오기 시도
+    private RepositoryContentDto tryGetRepositoryContents(String ownerName, String repo, String branch) {
+        try {
+            // GitHub ZIP 다운로드 URL
+            String zipUrl = String.format("https://github.com/%s/%s/archive/refs/heads/%s.zip", ownerName, repo, branch);
 
-        // 4. 임시 파일 삭제
-        tempZipFile.delete();
-        deleteFolder(tempDir);
+            // 1. ZIP 파일 다운로드
+            File tempZipFile = File.createTempFile(repo, ".zip");
+            downloadFile(zipUrl, tempZipFile);
 
-        return root;
+            // 2. ZIP 파일 압축 해제
+            File tempDir = new File(tempZipFile.getParent(), repo);
+            unzip(tempZipFile, tempDir);
+
+            // 3. 폴더 및 파일 구조 생성
+            RepositoryContentDto root = parseFolder(tempDir);
+
+            // 4. 임시 파일 삭제
+            tempZipFile.delete();
+            deleteFolder(tempDir);
+
+            return root;
+        } catch (IOException e) {
+            System.err.println("Failed to retrieve repository for owner: " + ownerName);
+            return null;
+        }
     }
 
     // 파일 다운로드
