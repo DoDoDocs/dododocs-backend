@@ -15,10 +15,10 @@ public class RepoAnalyze {
     @Column(name = "repository_name")
     private String repositoryName;
 
-    @Column(name = "readme_key")
+    @Column(name = "readme_key", nullable = false)
     private String readMeKey;
 
-    @Column(name = "docs_key")
+    @Column(name = "docs_key", nullable = true) // docs key 는 null 이 허용된다. (Java 파일이 없는 경우 null 이 나올 수 있음)
     private String docsKey;
 
     @ManyToOne(fetch = FetchType.LAZY)
