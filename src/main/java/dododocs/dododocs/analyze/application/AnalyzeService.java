@@ -141,9 +141,14 @@ public class AnalyzeService {
 
     private final String GITHUB_API_BASE_URL = "https://api.github.com/repos";
 
-    public RepositoryContentDto getRepositoryContents(String owner, String repo, String branch) throws IOException {
+    public RepositoryContentDto getRepositoryContents(long memberId, String repo, String branch) throws IOException {
+        final Member member = memberRepository.findById(memberId)
+                .orElseThrow(NoExistMemberException::new);
+
+        final String ownerName = member.getOriginName();
+
         // GitHub ZIP 다운로드 URL
-        String zipUrl = String.format("https://github.com/%s/%s/archive/refs/heads/%s.zip", owner, repo, branch);
+        String zipUrl = String.format("https://github.com/%s/%s/archive/refs/heads/%s.zip", ownerName, repo, branch);
 
         // 1. ZIP 파일 다운로드
         File tempZipFile = File.createTempFile(repo, ".zip");
