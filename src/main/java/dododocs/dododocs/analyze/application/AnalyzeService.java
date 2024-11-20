@@ -59,7 +59,8 @@ public class AnalyzeService {
 
         String s3Key = ownerName + "-" + repoName;
         ExternalAiZipAnalyzeResponse externalAiZipAnalyzeResponse =
-                externalAiZipAnalyzeClient.requestAiZipDownloadAndAnalyze(new ExternalAiZipAnalyzeRequest(s3Key, repoName, false));
+                externalAiZipAnalyzeClient.requestAiZipDownloadAndAnalyze(new ExternalAiZipAnalyzeRequest
+                        (s3Key, String.format("https://github.com/%s/%s", ownerName, repoName), false));
 
         // 1. readMeS3Key / 2. docsS3Key
 
@@ -81,6 +82,7 @@ public class AnalyzeService {
         try {
             String bucketDetailName = ownerName + "-" + repoName;
             String downloadUrl = String.format("https://github.com/%s/%s/archive/refs/heads/%s.zip", ownerName, repoName, branchName);
+            System.out.println("Attempting to download from GitHub URL: " + downloadUrl);
 
             // ZIP 파일을 임시 디렉토리에 저장
             File tempFile = File.createTempFile(repoName, ".zip");
