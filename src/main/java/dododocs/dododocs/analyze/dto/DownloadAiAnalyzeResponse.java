@@ -7,12 +7,14 @@ import java.util.Map;
 
 @Getter
 public class DownloadAiAnalyzeResponse {
-    private List<Map<String, String>> analyzeResults;
+    private List<Map<String, String>> summaryFiles;
+    private List<Map<String, String>> regularFiles;
 
     private DownloadAiAnalyzeResponse() {
     }
 
-    public DownloadAiAnalyzeResponse(final List<Map<String, String>> analyzeResults) {
-        this.analyzeResults = analyzeResults;
+    public DownloadAiAnalyzeResponse(List<Map<String, String>> summaryFiles, List<Map<String, String>> regularFiles) {
+        this.summaryFiles = summaryFiles;
+        this.regularFiles = regularFiles;
     }
 }

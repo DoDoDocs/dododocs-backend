@@ -35,14 +35,14 @@ public class DownloadFromS3Service {
         // 2. ZIP 파일 압축 해제
         File extractedDir = unzipFile(zipFile);
 
-        // 3. .md 파일을 Map으로 변환하여 리턴
-        List<Map<String, String>> markdownFiles = collectMarkdownFiles(extractedDir);
+        // 3. .md 파일을 Map으로 변환하여 분류
+        Map<String, List<Map<String, String>>> categorizedFiles = collectAndCategorizeMarkdownFiles(extractedDir);
 
         // 4. 임시 파일 삭제
         zipFile.delete();
         deleteDirectory(extractedDir);
 
-        return new DownloadAiAnalyzeResponse(markdownFiles);
+        return new DownloadAiAnalyzeResponse(categorizedFiles.get("summary"), categorizedFiles.get("regular"));
     }
 
     private File downloadZipFromS3(String bucketName, String s3Key) throws IOException {
@@ -91,23 +91,35 @@ public class DownloadFromS3Service {
         return outputDir;
     }
 
-    private List<Map<String, String>> collectMarkdownFiles(File directory) throws IOException {
-        List<Map<String, String>> markdownFiles = new ArrayList<>();
+    private Map<String, List<Map<String, String>>> collectAndCategorizeMarkdownFiles(File directory) throws IOException {
+        List<Map<String, String>> summaryFiles = new ArrayList<>();
+        List<Map<String, String>> regularFiles = new ArrayList<>();
         File[] files = directory.listFiles();
 
         if (files != null) {
             for (File file : files) {
                 if (file.isDirectory()) {
-                    markdownFiles.addAll(collectMarkdownFiles(file)); // 재귀적으로 하위 디렉토리 탐색
+                    Map<String, List<Map<String, String>>> subCategory = collectAndCategorizeMarkdownFiles(file);
+                    summaryFiles.addAll(subCategory.get("summary"));
+                    regularFiles.addAll(subCategory.get("regular"));
                 } else if (file.getName().endsWith(".md")) {
                     Map<String, String> fileData = new HashMap<>();
                     fileData.put(file.getName(), readFileContent(file));
-                    markdownFiles.add(fileData);
+
+                    if (file.getName().contains("_summary")) {
+                        summaryFiles.add(fileData);
+                    } else {
+                        regularFiles.add(fileData);
+                    }
                 }
             }
         }
 
-        return markdownFiles;
+        Map<String, List<Map<String, String>>> categorizedFiles = new HashMap<>();
+        categorizedFiles.put("summary", summaryFiles);
+        categorizedFiles.put("regular", regularFiles);
+
+        return categorizedFiles;
     }
 
     private String readFileContent(File file) throws IOException {
