@@ -81,7 +81,7 @@ public class DownloadControllerTest extends ControllerTestConfig {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new DownloadAiAnalyzeRequest("Gatsby-Starter-Haon"))))
                 .andDo(print())
-                .andDo(document("analyze/download/success",
+                .andDo(document("analyze/download/fail",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestHeaders(
