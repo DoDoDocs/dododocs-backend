@@ -2,6 +2,7 @@ package dododocs.dododocs.analyze;
 
 import dododocs.dododocs.analyze.dto.DownloadAiAnalyzeRequest;
 import dododocs.dododocs.analyze.dto.DownloadAiAnalyzeResponse;
+import dododocs.dododocs.analyze.exception.NoExistRepoAnalyzeException;
 import dododocs.dododocs.config.ControllerTestConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,7 @@ import java.util.Map;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -68,7 +70,35 @@ public class DownloadControllerTest extends ControllerTestConfig {
     @Test
     void 아직_AI_분석_결과가_완료되지_않았다면_상태코드_400을_리턴한다() throws Exception {
         // given
+        given(authService.extractMemberId(anyString())).willReturn(1L);
+        doThrow(new NoExistRepoAnalyzeException("레포지토리 결과물을 아직 생성중입니다. 잠시만 기다려주세요."))
+                .when(downloadFromS3Service).downloadAndProcessZip(anyString());
 
         // when, then
+        mockMvc.perform(put("/api/download/s3")
+                        .header("Authorization", "Bearer aaaaaa.bbbbbb.cccccc")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(new DownloadAiAnalyzeRequest("Gatsby-Starter-Haon"))))
+                .andDo(print())
+                .andDo(document("analyze/download/success",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName("Authorization").description("엑세스 토큰")
+                        ),
+                        requestFields(
+                                fieldWithPath("repositoryName").description("AI 문서화 결과를 다운 받을 레포지토리 이름")
+                        ),
+                        responseFields(
+                                fieldWithPath("summaryFiles[]").type(JsonFieldType.ARRAY).description("요약 파일 목록"),
+                                fieldWithPath("summaryFiles[].fileName").type(JsonFieldType.STRING).description("요약 파일 이름"),
+                                fieldWithPath("summaryFiles[].filePath").type(JsonFieldType.STRING).description("요약 파일 경로"),
+                                fieldWithPath("regularFiles[]").type(JsonFieldType.ARRAY).description("일반 파일 목록"),
+                                fieldWithPath("regularFiles[].fileName").type(JsonFieldType.STRING).description("일반 파일 이름"),
+                                fieldWithPath("regularFiles[].filePath").type(JsonFieldType.STRING).description("일반 파일 경로")
+                        )
+                ))
+                .andExpect(status().isBadRequest());
     }
 }
