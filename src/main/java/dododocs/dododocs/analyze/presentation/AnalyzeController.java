@@ -42,7 +42,6 @@ public class AnalyzeController {
                                    @RequestBody final UploadGitRepoContentToS3Request uploadToS3Request) {
         // s3 key 값, 레포 주소 필요
         try {
-            System.out.println(uploadToS3Request.getRepositoryName());
             analyzeService.uploadGithubRepoToS3(accessor.getId(), uploadToS3Request.getRepositoryName(), uploadToS3Request.getBranchName());
             return "GitHub repository successfully uploaded to S3!";
         } catch (Exception e) {
