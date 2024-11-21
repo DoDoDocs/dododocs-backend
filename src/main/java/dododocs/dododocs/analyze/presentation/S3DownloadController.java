@@ -16,8 +16,7 @@ public class S3DownloadController {
     private final DownloadFromS3Service s3DownloadService;
 
     @PostMapping("/download/s3")
-    public DownloadAiAnalyzeResponse downloadAIAnalyzeResultFromS3(@Authentication final Accessor accessor,
-                                                                   @RequestBody final DownloadAiAnalyzeRequest downloadAiAnalyzeRequest) throws Exception {
+    public DownloadAiAnalyzeResponse downloadAIAnalyzeResultFromS3(@RequestBody final DownloadAiAnalyzeRequest downloadAiAnalyzeRequest) throws Exception {
         return s3DownloadService.downloadAndProcessZip(downloadAiAnalyzeRequest.getRepositoryName());
     }
 }

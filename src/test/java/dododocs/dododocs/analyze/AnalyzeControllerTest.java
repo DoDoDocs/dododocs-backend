@@ -53,12 +53,12 @@ public class AnalyzeControllerTest extends ControllerTestConfig {
         doNothing().when(analyzeService).uploadGithubRepoToS3(anyLong(), anyString(), anyString());
 
         // when, then
-        mockMvc.perform(post("/api/repo/contents")
+        mockMvc.perform(get("/api/repo/contents")
                         .header("Authorization", "Bearer aaaaaa.bbbbbb.cccccc")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new FindGitRepoContentRequest("Gatsby-Starter-Haon", "main"))))
                 .andDo(print())
-                .andDo(document("/find/repo/content/success",
+                .andDo(document("find/repo/content/success",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestFields(

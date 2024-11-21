@@ -22,6 +22,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -32,14 +33,14 @@ public class DownloadControllerTest extends ControllerTestConfig {
     @Test
     void AI_문서화_결과를_다운로드_받고_상태코드_200을_리턴한다() throws Exception {
         // given
-        given(authService.extractMemberId(anyString())).willReturn(1L);
+        given(jwtTokenCreator.extractMemberId(anyString())).willReturn(1L);
         given(downloadFromS3Service.downloadAndProcessZip(anyString()))
                 .willReturn( new DownloadAiAnalyzeResponse(
                                 List.of(Map.of("fileName", "summary1.txt", "filePath", "/path/to/summary1.txt")),
                                 List.of(Map.of("fileName", "regular1.txt", "filePath", "/path/to/regular1.txt"))));
 
         // when, then
-        mockMvc.perform(put("/api/download/s3")
+        mockMvc.perform(post("/api/download/s3")
                         .header("Authorization", "Bearer aaaaaa.bbbbbb.cccccc")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -75,7 +76,7 @@ public class DownloadControllerTest extends ControllerTestConfig {
                 .when(downloadFromS3Service).downloadAndProcessZip(anyString());
 
         // when, then
-        mockMvc.perform(put("/api/download/s3")
+        mockMvc.perform(post("/api/download/s3")
                         .header("Authorization", "Bearer aaaaaa.bbbbbb.cccccc")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
