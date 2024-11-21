@@ -37,7 +37,7 @@ public class AnalyzeController {
         this.analyzeService = analyzeService;
     }
 
-    @GetMapping("/upload/s3")
+    @PostMapping("/upload/s3")
     public void uploadGithubToS3(@Authentication final Accessor accessor,
                                    @RequestBody final UploadGitRepoContentToS3Request uploadToS3Request) {
         // s3 key 값, 레포 주소 필요

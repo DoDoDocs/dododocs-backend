@@ -52,4 +52,7 @@ public abstract class ControllerTestConfig {
 
     @MockBean
     protected GithubOAuthUriProvider githubOAuthUriProvider;
+
+    @MockBean
+    protected AnalyzeService analyzeService;
 }
