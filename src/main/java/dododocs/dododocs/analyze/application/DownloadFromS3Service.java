@@ -66,7 +66,7 @@ public class DownloadFromS3Service {
     }
 
     private File unzipFile(File zipFile) throws IOException {
-        File outputDir = new File(zipFile.getParent(), "extracted");
+        File outputDir = new File(zipFile.getParent(), "extacted");
         if (!outputDir.exists()) {
             outputDir.mkdirs();
         }
