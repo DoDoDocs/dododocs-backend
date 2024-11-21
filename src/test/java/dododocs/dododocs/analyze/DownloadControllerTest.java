@@ -89,14 +89,6 @@ public class DownloadControllerTest extends ControllerTestConfig {
                         ),
                         requestFields(
                                 fieldWithPath("repositoryName").description("AI 문서화 결과를 다운 받을 레포지토리 이름")
-                        ),
-                        responseFields(
-                                fieldWithPath("summaryFiles[]").type(JsonFieldType.ARRAY).description("요약 파일 목록"),
-                                fieldWithPath("summaryFiles[].fileName").type(JsonFieldType.STRING).description("요약 파일 이름"),
-                                fieldWithPath("summaryFiles[].filePath").type(JsonFieldType.STRING).description("요약 파일 경로"),
-                                fieldWithPath("regularFiles[]").type(JsonFieldType.ARRAY).description("일반 파일 목록"),
-                                fieldWithPath("regularFiles[].fileName").type(JsonFieldType.STRING).description("일반 파일 이름"),
-                                fieldWithPath("regularFiles[].filePath").type(JsonFieldType.STRING).description("일반 파일 경로")
                         )
                 ))
                 .andExpect(status().isBadRequest());
