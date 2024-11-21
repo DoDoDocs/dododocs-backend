@@ -2,6 +2,7 @@ package dododocs.dododocs.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dododocs.dododocs.analyze.application.AnalyzeService;
+import dododocs.dododocs.analyze.application.DownloadFromS3Service;
 import dododocs.dododocs.auth.application.AuthService;
 import dododocs.dododocs.auth.domain.GithubOAuthUriProvider;
 import dododocs.dododocs.auth.domain.JwtTokenCreator;
@@ -55,4 +56,7 @@ public abstract class ControllerTestConfig {
 
     @MockBean
     protected AnalyzeService analyzeService;
+
+    @MockBean
+    protected DownloadFromS3Service downloadFromS3Service;
 }
