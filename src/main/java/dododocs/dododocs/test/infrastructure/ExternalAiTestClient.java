@@ -48,3 +48,4 @@ public class ExternalAiTestClient {
         }
         return "AI TEST FAILED~~~~~~~!!";
     }
+}
