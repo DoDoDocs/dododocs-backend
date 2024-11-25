@@ -51,6 +51,6 @@ cloud:
       secretKey: 123
 
 ai:
-  basic_url: ${AI_BASIC_URL}
+  basic_url: 123
 
 
