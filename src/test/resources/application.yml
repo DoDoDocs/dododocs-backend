@@ -50,4 +50,7 @@ cloud:
       accessKey: 123
       secretKey: 123
 
+ai:
+  basic_url: ${AI_BASIC_URL}
+
 
