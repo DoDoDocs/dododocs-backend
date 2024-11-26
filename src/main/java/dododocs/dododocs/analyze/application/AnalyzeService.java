@@ -101,7 +101,7 @@ public class AnalyzeService {
             tempFile = File.createTempFile(repoName, ".zip");
             downloadFileFromUrl(downloadUrl, tempFile);
         } catch (Exception e) {
-            System.out.println("깃허브 레포지토리 다운로드 받다가 오류저짐");
+            System.out.println("깃허브 레포지토리 다운로드 받다가 오류터짐");
             System.out.println("===================");
             System.out.println(e.getMessage());
             System.out.println("===================");
