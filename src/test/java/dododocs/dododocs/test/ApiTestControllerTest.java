@@ -19,6 +19,8 @@ import static org.springframework.restdocs.request.RequestDocumentation.pathPara
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import dododocs.dododocs.analyze.dto.DownloadAiAnalyzeRequest;
+import dododocs.dododocs.analyze.dto.UploadGitRepoContentToS3Request;
 import dododocs.dododocs.config.ControllerTestConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,11 +33,16 @@ public class ApiTestControllerTest extends ControllerTestConfig {
     @Test
     void analyzeResultTest_정상_응답_200() throws Exception {
         mockMvc.perform(get("/api/analyze/result")
-                        .accept(MediaType.APPLICATION_JSON))
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(new DownloadAiAnalyzeRequest("Gatsby-Starter-Haon"))))
                 .andDo(print())
                 .andDo(document("test/analyze/result/success",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("repositoryName").type(JsonFieldType.STRING).description("레포명")
+                        ),
                         responseFields(
                                 fieldWithPath("summaryFiles").type(JsonFieldType.ARRAY).description("요약 파일 목록"),
                                 fieldWithPath("summaryFiles[].*").type(JsonFieldType.STRING).description("요약 파일의 이름과 내용"),

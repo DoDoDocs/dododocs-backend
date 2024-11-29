@@ -1,5 +1,6 @@
 package dododocs.dododocs.test;
 
+import dododocs.dododocs.analyze.dto.DownloadAiAnalyzeRequest;
 import dododocs.dododocs.analyze.dto.DownloadAiAnalyzeResponse;
 import dododocs.dododocs.auth.domain.repository.MemberRepository;
 import dododocs.dododocs.member.domain.Member;
@@ -8,10 +9,7 @@ import dododocs.dododocs.test.dto.FindDbTestResponse;
 import dododocs.dododocs.test.dto.FindTrueTestResponse;
 import dododocs.dododocs.test.infrastructure.ExternalAiTestClient;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -57,7 +55,7 @@ public class ApiTestController {
     }
 
     @GetMapping("/analyze/result")
-    public ResponseEntity<DownloadAiAnalyzeResponse> analyzeResultTest() {
+    public ResponseEntity<DownloadAiAnalyzeResponse> analyzeResultTest(@RequestBody final DownloadAiAnalyzeRequest request) {
         List<Map<String, String>> summaryFiles = List.of(
                 Map.of("Controller_summary.md", """
             # Controller Files Summary
