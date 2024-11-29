@@ -1,5 +1,6 @@
 package dododocs.dododocs.test;
 
+import dododocs.dododocs.analyze.dto.DownloadAiAnalyzeResponse;
 import dododocs.dododocs.auth.domain.repository.MemberRepository;
 import dododocs.dododocs.member.domain.Member;
 import dododocs.dododocs.test.dto.CreateMemberRequest;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RequestMapping("/api")
 @RestController
@@ -50,5 +53,10 @@ public class ApiTestController {
     @GetMapping("/ping")
     public ResponseEntity<String> ping() {
         return ResponseEntity.ok(externalAiTestClient.requestTestAI());
+    }
+
+    @GetMapping("/analyze/result")
+    public ResponseEntity<DownloadAiAnalyzeResponse> analyzeResultTest() {
+        return ResponseEntity.ok(new DownloadAiAnalyzeResponse(List.of(), List.of()));
     }
 }
