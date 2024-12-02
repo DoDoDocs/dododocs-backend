@@ -29,7 +29,7 @@ include::{snippets}/analyze/upload/success/http-request.adoc[]
 
 include::{snippets}/analyze/upload/success/request-fields.adoc[]
 
-=== HTTP Response
+==== HTTP Response
 
 include::{snippets}/analyze/upload/success/http-response.adoc[]
 
