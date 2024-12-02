@@ -15,7 +15,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import dododocs.dododocs.analyze.domain.RepoAnalyze;
+import dododocs.dododocs.analyze.dto.DeleteRepoRegisterRequest;
 import dododocs.dododocs.analyze.dto.DownloadAiAnalyzeRequest;
+import dododocs.dododocs.analyze.dto.DownloadAiAnalyzeResponse;
 import dododocs.dododocs.analyze.dto.FindRepoRegisterResponses;
 import dododocs.dododocs.config.ControllerTestConfig;
 import org.junit.jupiter.api.DisplayName;
@@ -24,6 +26,7 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 
 import java.util.List;
+import java.util.Map;
 
 public class RepoRegisterControllerTest extends ControllerTestConfig {
 
@@ -58,5 +61,32 @@ public class RepoRegisterControllerTest extends ControllerTestConfig {
                         )
                 ))
                 .andExpect(status().isOk());
+    }
+
+    @DisplayName("등록된 레포를 삭제하고 상태코드 204를 리턴한다.")
+    @Test
+    void deleteRegisteredRepoControllerTest() throws Exception {
+        // given
+        given(jwtTokenCreator.extractMemberId(anyString())).willReturn(1L);
+        doNothing().when(repoRegisterService).removeRegisteredRepos(anyLong());
+
+        // when, then
+        mockMvc.perform(delete("/api/register")
+                        .header("Authorization", "Bearer aaaaaa.bbbbbb.cccccc")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(new DeleteRepoRegisterRequest(1L))))
+                .andDo(print())
+                .andDo(document("register/delete/success",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName("Authorization").description("엑세스 토큰")
+                        ),
+                        requestFields(
+                                fieldWithPath("registeredRepoId").description("삭제할 레포지토리 고유 ID")
+                        )
+                ))
+                .andExpect(status().isNoContent());
     }
 }
