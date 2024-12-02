@@ -24,4 +24,8 @@ public class RepoRegisterService {
         final List<RepoAnalyze> repoAnalyzes = repoAnalyzeRepository.findByMember(member);
         return new FindRepoRegisterResponses(repoAnalyzes);
     }
+
+    public void removeRegisteredRepos(final long registeredRepoId) {
+        repoAnalyzeRepository.deleteById(registeredRepoId);
+    }
 }
