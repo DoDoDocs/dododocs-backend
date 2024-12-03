@@ -4,13 +4,17 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class UploadGitRepoContentToS3Request {
     private String repositoryName;
     private String branchName;
-    private boolean previewBlock;
+    private boolean isKorean;
+    private List<String> readmeBlocks;
+    /* private boolean previewBlock;
     private boolean overviewBlock;
     private boolean analysisBlock;
     private boolean structureBlock;
@@ -20,7 +24,7 @@ public class UploadGitRepoContentToS3Request {
     private boolean deploymentBlock;
     private boolean contributorsBlock;
     private boolean faqBlock;
-    private boolean performanceBlock;
+    private boolean performanceBlock; */
 }
 
 /*
