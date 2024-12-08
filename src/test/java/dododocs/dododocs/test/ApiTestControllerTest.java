@@ -26,7 +26,14 @@ import dododocs.dododocs.config.ControllerTestConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.operation.preprocess.ContentModifyingOperationPreprocessor;
+import org.springframework.restdocs.operation.preprocess.OperationPreprocessor;
 import org.springframework.restdocs.payload.JsonFieldType;
+
+import java.nio.charset.StandardCharsets;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 public class ApiTestControllerTest extends ControllerTestConfig {
 

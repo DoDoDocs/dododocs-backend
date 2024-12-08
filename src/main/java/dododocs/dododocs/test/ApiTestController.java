@@ -124,7 +124,7 @@ public class ApiTestController {
         );
 
         List<DownloadAiAnalyzeResponse.FileDetail> regularFiles = List.of(
-                new DownloadAiAnalyzeResponse.FileDetail("kakao-25_moheng.README.md", """
+                new DownloadAiAnalyzeResponse.FileDetail("AuthController.md", """
                 # Project Name
                 moheng
 
