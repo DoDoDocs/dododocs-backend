@@ -3,6 +3,7 @@ package dododocs.dododocs.analyze;
 import dododocs.dododocs.analyze.dto.DownloadAiAnalyzeRequest;
 import dododocs.dododocs.analyze.dto.DownloadAiAnalyzeResponse;
 import dododocs.dododocs.analyze.exception.NoExistRepoAnalyzeException;
+import dododocs.dododocs.auth.dto.LoginRequest;
 import dododocs.dododocs.config.ControllerTestConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,9 +25,9 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class DownloadControllerTest extends ControllerTestConfig {
@@ -38,11 +39,11 @@ public class DownloadControllerTest extends ControllerTestConfig {
         given(jwtTokenCreator.extractMemberId(anyString())).willReturn(1L);
         given(downloadFromS3Service.downloadAndProcessZip(anyString()))
                 .willReturn(new DownloadAiAnalyzeResponse(
-                        List.of(new DownloadAiAnalyzeResponse.FileDetail("Controller_Summary.md", "/path/to/controller_summary.md"),
-                                new DownloadAiAnalyzeResponse.FileDetail("Service_Summary.md", "/path/to/service_summary.md")),
-                        List.of(new DownloadAiAnalyzeResponse.FileDetail("AuthController.md", "/path/to/auth_controller.md"),
-                                new DownloadAiAnalyzeResponse.FileDetail("AuthService.md", "/path/to/auth_service.md"),
-                                new DownloadAiAnalyzeResponse.FileDetail("TravelController.md", "/path/to/travel_controller.md"))
+                        List.of(new DownloadAiAnalyzeResponse.FileDetail("Controller_Summary.md", "전체 컨트롤러 요약 내용"),
+                                new DownloadAiAnalyzeResponse.FileDetail("Service_Summary.md", "전체 서비스 요약 내용")),
+                        List.of(new DownloadAiAnalyzeResponse.FileDetail("AuthController.md", "설명1"),
+                                new DownloadAiAnalyzeResponse.FileDetail("AuthService.md", "설명2"),
+                                new DownloadAiAnalyzeResponse.FileDetail("TravelController.md", "설명3"))
                 ));
 
 
@@ -97,5 +98,43 @@ public class DownloadControllerTest extends ControllerTestConfig {
                         )
                 ))
                 .andExpect(status().isBadRequest());
+    }
+
+    @DisplayName("레포에서 특정 파일명 입력했을 때, 그에 대한 리드미 내용을 제공한다.")
+    @Test
+    void getFileContentByFileName_ValidFile_ReturnsContent() throws Exception {
+        // given
+        given(authService.extractMemberId(anyString())).willReturn(1L);
+        given(downloadFromS3Service.downloadAndProcessZip(anyString())).willReturn(
+                new DownloadAiAnalyzeResponse(
+                        List.of(new DownloadAiAnalyzeResponse.FileDetail("Controller_Summary.md", "전체 컨트롤러 요약 내용")),
+                        List.of(new DownloadAiAnalyzeResponse.FileDetail("AuthService.md", "설명2"))
+                )
+        );
+
+        // when, then
+        mockMvc.perform(get("/api/download/s3/detail")
+                        .header("Authorization", "Bearer aaaaaa.bbbbbb.cccccc")
+                        .param("repositoryName", "my-repo")
+                        .param("fileName", "Controller_Summary.md")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andDo(document("download/repo/file/detail/success",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName("Authorization").description("OAuth 인증 토큰")
+                        ),
+                        queryParameters(
+                                parameterWithName("repositoryName").description("조회할 레포 이름"),
+                                parameterWithName("fileName").description("조회할 파일 이름")
+                        ),
+                        responseFields(
+                                fieldWithPath("fileName").description("요청한 파일 이름"),
+                                fieldWithPath("fileContents").description("해당 파일의 내용")
+                        )
+                ))
+                .andExpect(status().isOk());
     }
 }
