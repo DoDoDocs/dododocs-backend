@@ -18,19 +18,19 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Map;
 
-@RequestMapping("/api/download")
+@RequestMapping("/api")
 @RestController
 @RequiredArgsConstructor
 public class S3DownloadController {
     private final DownloadFromS3Service s3DownloadService;
     private final DownloadFromS3Service downloadFromS3Service;
 
-    @PostMapping("/s3")
+    @PostMapping("/download/s3")
     public DownloadAiAnalyzeResponse downloadAIAnalyzeResultFromS3(@RequestParam final String repositoryName) throws Exception {
         return s3DownloadService.downloadAndProcessZip(repositoryName);
     }
 
-    @GetMapping("/s3/detail")
+    @GetMapping("/download/s3/detail")
     public FileContentResponse getFileContentByFileName(@RequestParam final String repositoryName,
                                                         @RequestParam final String fileName) throws Exception {
         DownloadAiAnalyzeResponse response = s3DownloadService.downloadAndProcessZip(repositoryName);
@@ -46,18 +46,11 @@ public class S3DownloadController {
                 .orElseThrow(() -> new RuntimeException("File not found"));
     }
 
-    @PostMapping("/s3")
-    public ResponseEntity<String> updateFileContent(
-            @RequestParam String repositoryName,
-            @RequestParam String fileName,
-            @RequestBody String newContent) {
-        try {
-            downloadFromS3Service.updateFileContent(repositoryName, fileName, newContent);
-            return ResponseEntity.ok("파일 내용이 성공적으로 업데이트되었습니다.");
-        } catch (FileNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("파일 업데이트 중 문제가 발생했습니다.");
-        }
+    @PutMapping("/readme")
+    public ResponseEntity<Void> updateFileContent(
+            @Authentication final Accessor accessor,
+            @RequestParam String repositoryName, @RequestParam String fileName, @RequestParam String newContent) throws Exception {
+        downloadFromS3Service.updateFileContent(repositoryName, fileName, newContent);
+        return ResponseEntity.noContent().build();
     }
 }
