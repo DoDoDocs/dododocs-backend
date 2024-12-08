@@ -1,5 +1,6 @@
 package dododocs.dododocs.analyze.domain;
 
+import dododocs.dododocs.global.BaseEntity;
 import dododocs.dododocs.member.domain.Member;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -7,7 +8,7 @@ import lombok.Getter;
 @Table(name = "repo_analyze")
 @Getter
 @Entity
-public class RepoAnalyze extends {
+public class RepoAnalyze extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
