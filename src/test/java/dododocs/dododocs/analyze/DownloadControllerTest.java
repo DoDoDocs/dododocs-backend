@@ -37,9 +37,14 @@ public class DownloadControllerTest extends ControllerTestConfig {
         // given
         given(jwtTokenCreator.extractMemberId(anyString())).willReturn(1L);
         given(downloadFromS3Service.downloadAndProcessZip(anyString()))
-                .willReturn( new DownloadAiAnalyzeResponse(
-                                List.of(Map.of("fileName", "summary1.txt", "filePath", "/path/to/summary1.txt")),
-                                List.of(Map.of("fileName", "regular1.txt", "filePath", "/path/to/regular1.txt"))));
+                .willReturn(new DownloadAiAnalyzeResponse(
+                        List.of(new DownloadAiAnalyzeResponse.FileDetail("Controller_Summary.md", "/path/to/controller_summary.md"),
+                                new DownloadAiAnalyzeResponse.FileDetail("Service_Summary.md", "/path/to/service_summary.md")),
+                        List.of(new DownloadAiAnalyzeResponse.FileDetail("AuthController.md", "/path/to/auth_controller.md"),
+                                new DownloadAiAnalyzeResponse.FileDetail("AuthService.md", "/path/to/auth_service.md"),
+                                new DownloadAiAnalyzeResponse.FileDetail("TravelController.md", "/path/to/travel_controller.md"))
+                ));
+
 
         // when, then
         mockMvc.perform(post("/api/download/s3")
@@ -60,10 +65,10 @@ public class DownloadControllerTest extends ControllerTestConfig {
                         responseFields(
                                 fieldWithPath("summaryFiles[]").type(JsonFieldType.ARRAY).description("요약 파일 목록"),
                                 fieldWithPath("summaryFiles[].fileName").type(JsonFieldType.STRING).description("요약 파일 이름"),
-                                fieldWithPath("summaryFiles[].filePath").type(JsonFieldType.STRING).description("요약 파일 경로"),
+                                fieldWithPath("summaryFiles[].fileContents").type(JsonFieldType.STRING).description("요약 파일 내용"),
                                 fieldWithPath("regularFiles[]").type(JsonFieldType.ARRAY).description("일반 파일 목록"),
                                 fieldWithPath("regularFiles[].fileName").type(JsonFieldType.STRING).description("일반 파일 이름"),
-                                fieldWithPath("regularFiles[].filePath").type(JsonFieldType.STRING).description("일반 파일 경로")
+                                fieldWithPath("regularFiles[].fileContents").type(JsonFieldType.STRING).description("일반 파일 내용")
                         )
                 ))
                 .andExpect(status().isOk());
