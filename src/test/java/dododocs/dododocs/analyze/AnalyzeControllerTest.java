@@ -35,19 +35,8 @@ public class AnalyzeControllerTest extends ControllerTestConfig {
         mockMvc.perform(post("/api/upload/s3")
                         .header("Authorization", "Bearer aaaaaa.bbbbbb.cccccc")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(new UploadGitRepoContentToS3Request("Gatsby-Starter-Haon", "main", true,
-                                List.of(
-                                        "PREVIEW_BLOCK",
-                                        "ANALYSIS_BLOCK",
-                                        "STRUCTURE_BLOCK",
-                                        "START_BLOCK",
-                                        "MOTIVATION_BLOCK",
-                                        "DEMO_BLOCK",
-                                        "DEPLOYMENT_BLOCK",
-                                        "CONTRIBUTORS_BLOCK",
-                                        "FAQ_BLOCK",
-                                        "PERFORMANCE_BLOCK"
-                                )))))
+                        .content(objectMapper.writeValueAsString(new UploadGitRepoContentToS3Request("Gatsby-Starter-Haon", "main", true, true
+                                ))))
                 .andDo(print())
                 .andDo(document("analyze/upload/success",
                         preprocessRequest(prettyPrint()),

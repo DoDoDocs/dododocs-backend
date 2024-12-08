@@ -75,7 +75,7 @@ public class AnalyzeService {
 
         ExternalAiZipAnalyzeResponse externalAiZipAnalyzeResponse =
                 externalAiZipAnalyzeClient.requestAiZipDownloadAndAnalyze(new ExternalAiZipAnalyzeRequest
-                        (s3Key, String.format("https://github.com/%s/%s", ownerName, repoName), readmeBlocks, false, uploadGitRepoContentToS3Request.isKorean()));
+                        (s3Key, String.format("https://github.com/%s/%s", ownerName, repoName), List.of(), false, uploadGitRepoContentToS3Request.isKorean()));
 
         // 1. readMeS3Key / 2. docsS3Key
 
