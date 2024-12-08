@@ -27,6 +27,6 @@ public class MemberController {
 
     @GetMapping("/repos/registered")
     public ResponseEntity<FindRegisterMemberRepoResponses> findMemberRepoRegisteredList(@Authentication final Accessor accessor) {
-        return null;
+        return ResponseEntity.ok(memberService.findRegisterMemberRepoResponses(accessor.getId()));
     }
 }

@@ -86,6 +86,7 @@ public class AnalyzeService {
         // 4. ownerName (ex. msung99)
         repoAnalyzeRepository.save(
                 new RepoAnalyze(repoName,
+                        branchName,
                         // "kakao-25_moheng_DOCS.zip",
                         // "kakao-25_moheng_DOCS.zip",
                         externalAiZipAnalyzeResponse.getReadMeS3Key(),

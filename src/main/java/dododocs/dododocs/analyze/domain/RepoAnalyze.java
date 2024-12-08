@@ -16,6 +16,9 @@ public class RepoAnalyze extends BaseEntity {
     @Column(name = "repository_name")
     private String repositoryName;
 
+    @Column(name = "branch_name")
+    private String branchName;
+
     @Column(name = "readme_key", nullable = false)
     private String readMeKey;
 
@@ -32,8 +35,9 @@ public class RepoAnalyze extends BaseEntity {
     protected RepoAnalyze() {
     }
 
-    public RepoAnalyze(final String repositoryName, final String readMeKey, final String docsKey, final String repoUrl, final Member member) {
+    public RepoAnalyze(final String repositoryName, final String branchName, final String readMeKey, final String docsKey, final String repoUrl, final Member member) {
         this.repositoryName = repositoryName;
+        this.branchName = branchName;
         this.readMeKey = readMeKey;
         this.docsKey = docsKey;
         this.repoUrl = repoUrl;
