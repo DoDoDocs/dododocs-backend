@@ -7,11 +7,14 @@ import dododocs.dododocs.analyze.dto.DownloadAiAnalyzeResponse;
 import dododocs.dododocs.analyze.dto.FileContentResponse;
 import dododocs.dododocs.auth.dto.Accessor;
 import dododocs.dododocs.auth.presentation.authentication.Authentication;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.apache.catalina.LifecycleState;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -20,6 +23,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class S3DownloadController {
     private final DownloadFromS3Service s3DownloadService;
+    private final DownloadFromS3Service downloadFromS3Service;
 
     @PostMapping("/s3")
     public DownloadAiAnalyzeResponse downloadAIAnalyzeResultFromS3(@RequestParam final String repositoryName) throws Exception {
@@ -40,5 +44,20 @@ public class S3DownloadController {
                         .findFirst())
                 .map(file -> new FileContentResponse(file.getFileName(), file.getFileContents()))
                 .orElseThrow(() -> new RuntimeException("File not found"));
+    }
+
+    @PostMapping("/s3")
+    public ResponseEntity<String> updateFileContent(
+            @RequestParam String repositoryName,
+            @RequestParam String fileName,
+            @RequestBody String newContent) {
+        try {
+            downloadFromS3Service.updateFileContent(repositoryName, fileName, newContent);
+            return ResponseEntity.ok("파일 내용이 성공적으로 업데이트되었습니다.");
+        } catch (FileNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("파일 업데이트 중 문제가 발생했습니다.");
+        }
     }
 }
