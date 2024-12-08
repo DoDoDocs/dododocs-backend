@@ -139,7 +139,7 @@ public class DownloadControllerTest extends ControllerTestConfig {
                 .andExpect(status().isOk());
     }
 
-    @DisplayName("파일 내용을 수정하고 성공 메시지를 반환한다.")
+    @DisplayName("리드미 내용을 수정하고 성공 메시지를 반환한다.")
     @Test
     void updateFileContent_Success_ReturnsOk() throws Exception {
         // given
@@ -151,7 +151,7 @@ public class DownloadControllerTest extends ControllerTestConfig {
                         .header("Authorization", "Bearer aaaaaa.bbbbbb.cccccc")
                         .queryParam("repositoryName", "dododocs")
                         .queryParam("fileName", "Controller_Summary.md")
-                        .queryParam("newContent", "새롭게 수정할 리드미 내용")
+                        .queryParam("newContent", "new contents~~")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
