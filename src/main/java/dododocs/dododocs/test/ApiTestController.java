@@ -123,10 +123,48 @@ public class ApiTestController {
             """)
         );
 
-        List<DownloadAiAnalyzeResponse.FileDetail> regularFiles = List.of();
+        List<DownloadAiAnalyzeResponse.FileDetail> regularFiles = List.of(
+                new DownloadAiAnalyzeResponse.FileDetail("kakao-25_moheng.README.md", """
+                # Project Name
+                moheng
+
+                ## Table of Contents
+                [ 📝 Overview](#📝-overview)  
+                [ 📁 Project Structure](#📁-project-structure)  
+                [ 🚀 Getting Started](#🚀-getting-started)  
+                [ 💡 Motivation](#💡-motivation)  
+                [ 🎬 Demo](#🎬-demo)  
+                [ 🌐 Deployment](#🌐-deployment)  
+                [ 🤝 Contributing](#🤝-contributing)  
+                [ ❓ Troubleshooting & FAQ](#❓-troubleshootaing-&-faq)  
+                [ 📈 Performance](#📈-performance)  
+
+                ## 📝 Overview
+                이 프로젝트는 여행 계획 및 추천 시스템을 구축하기 위한 것입니다. 사용자는 여행지에 대한 정보를 얻고, 개인화된 추천을 받을 수 있습니다.
+
+                ### Main Purpose
+                - 사용자가 여행 계획을 세우고, 개인의 선호에 맞는 여행지를 추천받을 수 있도록 지원합니다.
+                - 여행지에 대한 정보를 제공하고, 사용자의 클릭 데이터를 기반으로 추천 알고리즘을 통해 맞춤형 여행지를 제안합니다.
+
+                ### Key Features
+                - 사용자 맞춤형 여행지 추천
+                - 여행지 정보 제공
+                - 클릭 데이터를 기반으로 한 추천 알고리즘
+
+                ### Core Technology Stack
+                - Frontend: React, Vite
+                - Backend: Spring Boot
+                - Database: MySQL
+                - Others: Python, FastAPI (AI 모델 서빙)
+
+                ## 📁 Project Structure
+                ...
+            """)
+        );
 
         return ResponseEntity.ok(new DownloadAiAnalyzeResponse(summaryFiles, regularFiles));
     }
+
 
 
     @PutMapping("/test/readme/update")
