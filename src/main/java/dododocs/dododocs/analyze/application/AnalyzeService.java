@@ -50,7 +50,6 @@ public class AnalyzeService {
     public void uploadGithubRepoToS3(final UploadGitRepoContentToS3Request uploadGitRepoContentToS3Request, final long memberId) {
         final String repoName = uploadGitRepoContentToS3Request.getRepositoryName();
         final String branchName = uploadGitRepoContentToS3Request.getBranchName();
-        final List<String> readmeBlocks = uploadGitRepoContentToS3Request.getReadmeBlocks();
 
         // Member를 조회
         Member member = memberRepository.findById(memberId)

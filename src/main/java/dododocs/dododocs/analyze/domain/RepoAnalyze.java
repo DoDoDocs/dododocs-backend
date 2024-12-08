@@ -7,7 +7,7 @@ import lombok.Getter;
 @Table(name = "repo_analyze")
 @Getter
 @Entity
-public class RepoAnalyze {
+public class RepoAnalyze extends {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

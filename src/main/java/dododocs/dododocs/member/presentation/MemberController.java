@@ -20,9 +20,14 @@ public class MemberController {
         this.memberService = memberService;
     }
 
-    @GetMapping("/repos")
-    public ResponseEntity<FindRepoNameListResponse> findMemberRepoList(@Authentication final Accessor accessor) {
+    @GetMapping("/repos/all")
+    public ResponseEntity<FindRepoNameListResponse> findMemberRepoAllList(@Authentication final Accessor accessor) {
         FindRepoNameListResponse findRepoNameListResponse = memberService.getUserRepositories(accessor.getId());
         return ResponseEntity.ok(findRepoNameListResponse);
+    }
+
+    @GetMapping("/repos/registered")
+    public ResponseEntity<FindRepoNameListResponse> findMemberRepoRegisteredList(@Authentication final Accessor accessor) {
+        return null;
     }
 }

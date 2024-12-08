@@ -1,4 +1,4 @@
-package dododocs.dododocs.chatbot;
+package dododocs.dododocs.chatbot.application;
 
 import org.springframework.stereotype.Service;
 
