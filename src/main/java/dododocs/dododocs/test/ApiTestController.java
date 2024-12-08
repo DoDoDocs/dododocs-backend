@@ -3,6 +3,8 @@ package dododocs.dododocs.test;
 import dododocs.dododocs.analyze.dto.DownloadAiAnalyzeRequest;
 import dododocs.dododocs.analyze.dto.DownloadAiAnalyzeResponse;
 import dododocs.dododocs.auth.domain.repository.MemberRepository;
+import dododocs.dododocs.auth.dto.Accessor;
+import dododocs.dododocs.auth.presentation.authentication.Authentication;
 import dododocs.dododocs.member.domain.Member;
 import dododocs.dododocs.test.dto.CreateMemberRequest;
 import dododocs.dododocs.test.dto.FindDbTestResponse;
@@ -151,5 +153,12 @@ public class ApiTestController {
         );
 
         return ResponseEntity.ok(new DownloadAiAnalyzeResponse(summaryFiles, regularFiles));
+    }
+
+    @PutMapping("/test/readme/update")
+    public ResponseEntity<Void> updateTestReadme(@RequestParam String repositoryName,
+                                                 @RequestParam String fileName,
+                                                 @RequestParam String newContent) throws Exception {
+        return ResponseEntity.noContent().build();
     }
 }
