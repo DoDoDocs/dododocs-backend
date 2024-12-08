@@ -22,6 +22,8 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -42,9 +44,9 @@ public class DownloadControllerTest extends ControllerTestConfig {
         // when, then
         mockMvc.perform(post("/api/download/s3")
                         .header("Authorization", "Bearer aaaaaa.bbbbbb.cccccc")
+                        .queryParam("repositoryName", "dododocs")
                         .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(new DownloadAiAnalyzeRequest("Gatsby-Starter-Haon"))))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andDo(document("analyze/download/success",
                         preprocessRequest(prettyPrint()),
@@ -52,8 +54,8 @@ public class DownloadControllerTest extends ControllerTestConfig {
                         requestHeaders(
                                 headerWithName("Authorization").description("엑세스 토큰")
                         ),
-                        requestFields(
-                                fieldWithPath("repositoryName").description("AI 문서화 결과를 다운 받을 레포지토리 이름")
+                        queryParameters(
+                                parameterWithName("repositoryName").description("다운로드 받을 레포명")
                         ),
                         responseFields(
                                 fieldWithPath("summaryFiles[]").type(JsonFieldType.ARRAY).description("요약 파일 목록"),
@@ -78,18 +80,15 @@ public class DownloadControllerTest extends ControllerTestConfig {
         // when, then
         mockMvc.perform(post("/api/download/s3")
                         .header("Authorization", "Bearer aaaaaa.bbbbbb.cccccc")
-                        .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(new DownloadAiAnalyzeRequest("Gatsby-Starter-Haon"))))
+                        .queryParam("repositoryName", "dododocs")
+                         .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andDo(document("analyze/download/fail",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
-                        requestHeaders(
-                                headerWithName("Authorization").description("엑세스 토큰")
-                        ),
-                        requestFields(
-                                fieldWithPath("repositoryName").description("AI 문서화 결과를 다운 받을 레포지토리 이름")
+                        queryParameters(
+                                parameterWithName("repositoryName").description("다운로드 받을 레포명")
                         )
                 ))
                 .andExpect(status().isBadRequest());

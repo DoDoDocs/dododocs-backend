@@ -44,7 +44,7 @@ public class AnalyzeController {
 
     @PostMapping("/upload/s3")
     public void uploadGithubToS3(@Authentication final Accessor accessor,
-                                   @RequestBody final UploadGitRepoContentToS3Request uploadToS3Request) {
+                                 @RequestBody final UploadGitRepoContentToS3Request uploadToS3Request) {
         // s3 key 값, 레포 주소 필요
         analyzeService.uploadGithubRepoToS3(uploadToS3Request, accessor.getId());
     }
