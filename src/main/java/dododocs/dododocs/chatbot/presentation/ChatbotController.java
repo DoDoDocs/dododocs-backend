@@ -15,11 +15,11 @@ import java.util.List;
 public class ChatbotController {
     private final ChatbotService chatbotService;
 
-    @PostMapping("/question/save")
+    /* @PostMapping("/question/save")
     public ResponseEntity<Void> questionToChatbotAndSaveLogs(@Authentication final Accessor accessor) {
         chatbotService.questionToChatbotAndSaveLogs(new QuestToChatbotRequest("", "", List.of()));
         return ResponseEntity.noContent().build();
-    }
+    } */
 
     @GetMapping("/logs/{repoId}")
     public ResponseEntity<Void> findChatbotTalkLogs(@Authentication final Accessor accessor, @PathVariable final long repoId) {
