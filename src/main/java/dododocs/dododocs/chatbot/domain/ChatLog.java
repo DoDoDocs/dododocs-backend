@@ -10,6 +10,7 @@ import lombok.Getter;
 public class ChatLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     @Column(name = "question")
@@ -22,7 +23,7 @@ public class ChatLog {
     private Long sequence;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id", nullable = false)
+    @JoinColumn(name = "repo_analyze_id", nullable = false)
     private RepoAnalyze repoAnalyze;
 
     protected ChatLog() {
