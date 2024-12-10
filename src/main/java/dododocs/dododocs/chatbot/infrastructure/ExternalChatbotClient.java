@@ -1,14 +1,13 @@
 package dododocs.dododocs.chatbot.infrastructure;
 
-import dododocs.dododocs.chatbot.dto.QuestToChatbotRequest;
-import dododocs.dododocs.chatbot.dto.QuestToChatbotResponse;
+import dododocs.dododocs.chatbot.dto.ExternalQuestToChatbotRequest;
+import dododocs.dododocs.chatbot.dto.ExternalQuestToChatbotResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.DefaultUriBuilderFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,18 +24,18 @@ public class ExternalChatbotClient {
         this.aiBasicUrl = aiBasicUrl;
     }
 
-    public QuestToChatbotResponse questToChatbot(final QuestToChatbotRequest questToChatbotRequest) {
+    public ExternalQuestToChatbotResponse questToChatbot(final ExternalQuestToChatbotRequest questToChatbotRequest) {
         return requestQuestion(questToChatbotRequest);
     }
 
-    private QuestToChatbotResponse requestQuestion(final QuestToChatbotRequest questToChatbotRequest) {
+    private ExternalQuestToChatbotResponse requestQuestion(final ExternalQuestToChatbotRequest questToChatbotRequest) {
         final Map<String, String> urlVariables = new HashMap<>();
 
-        final ResponseEntity<QuestToChatbotResponse> responseEntity = restTemplate.exchange(
+        final ResponseEntity<ExternalQuestToChatbotResponse> responseEntity = restTemplate.exchange(
                 aiBasicUrl + CHATBOT_QUESTION_REQUEST_URL_PREFIX,
                 HttpMethod.POST,
                 new HttpEntity<>(questToChatbotRequest),
-                QuestToChatbotResponse.class,
+                ExternalQuestToChatbotResponse.class,
                 urlVariables
         );
 
