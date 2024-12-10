@@ -19,7 +19,7 @@ public class ExternalChatbotClient {
     private final RestTemplate restTemplate;
 
     public ExternalChatbotClient(final RestTemplate restTemplate,
-                                 @Value("${AI_BASIC_URL}") final String aiBasicUrl) {
+                                 @Value("${ai.basic_url}") final String aiBasicUrl) {
         this.restTemplate = restTemplate;
         this.aiBasicUrl = aiBasicUrl;
     }
