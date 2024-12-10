@@ -4,8 +4,7 @@ import lombok.Getter;
 
 @Getter
 public class QuestToChatbotRequest {
-    private String
-    question;
+    private String question;
 
     private QuestToChatbotRequest() {
     }
