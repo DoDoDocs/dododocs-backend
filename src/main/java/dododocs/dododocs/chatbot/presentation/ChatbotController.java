@@ -14,6 +14,7 @@ public class ChatbotController {
 
     @PostMapping("/question/save")
     public ResponseEntity<Void> questionToChatbotAndSaveLogs() {
+        chatbotService.questionToChatbotAndSaveLogs();
         return ResponseEntity.noContent().build();
     }
 
