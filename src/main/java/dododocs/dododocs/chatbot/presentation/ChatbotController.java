@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Pageable;
 
 @RequiredArgsConstructor
-@RestController("/api/chatbot")
+@RestController
+@RequestMapping("/api/chatbot")
 public class ChatbotController {
     private final ChatbotService chatbotService;
 
