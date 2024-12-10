@@ -1,0 +1,20 @@
+== ⛳️ Chatbot (챗봇)
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+
+=== 챗봇 대화 내역 불러오기
+
+==== HTTP Request
+
+include::{snippets}/chatbot/find/logs/success/http-request.adoc[]
+
+==== Request Header
+
+include::{snippets}/chatbot/find/logs/success/request-headers.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/chatbot/find/logs/success/http-response.adoc[]
