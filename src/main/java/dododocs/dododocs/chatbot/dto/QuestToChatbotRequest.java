@@ -16,6 +16,7 @@ public class QuestToChatbotRequest {
     @JsonProperty("query")
     private String query;
 
+    @JsonProperty("chat_history")
     private List<ChatLog> chatHistory;
 
     private boolean stream;
