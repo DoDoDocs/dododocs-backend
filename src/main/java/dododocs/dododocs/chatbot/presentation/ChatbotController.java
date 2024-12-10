@@ -18,7 +18,7 @@ public class ChatbotController {
     public ResponseEntity<Void> questionToChatbotAndSaveLogs(@Authentication final Accessor accessor,
                                                              @PathVariable final Long registeredRepoId,
                                                              @RequestBody final QuestToChatbotRequest questToChatbotRequest) {
-        chatbotService.questionToChatbotAndSaveLogs(registeredRepoId, questToChatbotRequest);
+        chatbotService.questionToChatbotAndSaveLogs(registeredRepoId, questToChatbotRequest.getQuestion());
         return ResponseEntity.noContent().build();
     }
 

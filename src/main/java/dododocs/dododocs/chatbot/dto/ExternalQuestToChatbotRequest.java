@@ -1,6 +1,7 @@
 package dododocs.dododocs.chatbot.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dododocs.dododocs.chatbot.domain.ChatLog;
 import lombok.Getter;
 
 import java.util.List;
@@ -15,19 +16,19 @@ public class ExternalQuestToChatbotRequest {
     private String query;
 
     @JsonProperty("chat_history")
-    private List<ChatLog> chatHistory;
+    private List<RecentChatLog> chatHistory;
 
     private boolean stream;
 
     @Getter
-    public class ChatLog {
+    public static class RecentChatLog {
         private String question;
         private String answer;
 
-        private ChatLog() {
+        private RecentChatLog() {
         }
 
-        public ChatLog(final String question, final String answer) {
+        public RecentChatLog(final String question, final String answer) {
             this.question = question;
             this.answer = answer;
         }
@@ -36,7 +37,7 @@ public class ExternalQuestToChatbotRequest {
     private ExternalQuestToChatbotRequest() {
     }
 
-    public ExternalQuestToChatbotRequest(final String repoUrl, final String query, final List<ChatLog> chatHistory, final boolean stream) {
+    public ExternalQuestToChatbotRequest(final String repoUrl, final String query, final List<RecentChatLog> chatHistory, final boolean stream) {
         this.repoUrl = repoUrl;
         this.query = query;
         this.chatHistory = chatHistory;
