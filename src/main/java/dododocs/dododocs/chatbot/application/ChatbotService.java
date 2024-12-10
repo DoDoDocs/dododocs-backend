@@ -7,10 +7,12 @@ import dododocs.dododocs.chatbot.domain.ChatLog;
 import dododocs.dododocs.chatbot.domain.repository.ChatLogRepository;
 import dododocs.dododocs.chatbot.dto.ExternalQuestToChatbotRequest;
 import dododocs.dododocs.chatbot.dto.ExternalQuestToChatbotResponse;
+import dododocs.dododocs.chatbot.dto.FindChatLogResponeses;
 import dododocs.dododocs.chatbot.infrastructure.ExternalChatbotClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.awt.print.Pageable;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -38,4 +40,12 @@ public class ChatbotService {
         );
         return externalChatbotClient.questToChatbot(questToChatbotRequest);
     }
+
+    public FindChatLogResponeses findChatbotHistory(final long registeredRepoId, final Pageable pageable) {
+        final RepoAnalyze repoAnalyze = repoAnalyzeRepository.findById(registeredRepoId)
+                .orElseThrow(() -> new NoExistRepoAnalyzeException("레포 정보 없습니다."));
+
+        return new FindChatLogResponeses(chatLogRepository.findByRepoAnalyze(repoAnalyze, pageable));
+    }
 }
+
