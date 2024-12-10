@@ -3,8 +3,7 @@ package dododocs.dododocs.chatbot.presentation;
 import dododocs.dododocs.auth.dto.Accessor;
 import dododocs.dododocs.auth.presentation.authentication.Authentication;
 import dododocs.dododocs.chatbot.application.ChatbotService;
-import dododocs.dododocs.chatbot.dto.ExternalQuestToChatbotRequest;
-import dododocs.dododocs.chatbot.dto.FindChatLogResponeses;
+import dododocs.dododocs.chatbot.dto.FindChatLogResponses;
 import dododocs.dododocs.chatbot.dto.QuestToChatbotRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.web.PageableDefault;
@@ -27,9 +26,9 @@ public class ChatbotController {
     }
 
     @GetMapping("/logs/{registeredRepoId}")
-    public ResponseEntity<FindChatLogResponeses> findChatbotHistory(@Authentication final Accessor accessor,
-                                                                    @PathVariable final Long registeredRepoId,
-                                                                    @PageableDefault(size = 30) final Pageable pageable) {
+    public ResponseEntity<FindChatLogResponses> findChatbotHistory(@Authentication final Accessor accessor,
+                                                                   @PathVariable final Long registeredRepoId,
+                                                                   @PageableDefault(size = 30) final Pageable pageable) {
         return ResponseEntity.ok(chatbotService.findChatbotHistory(registeredRepoId, pageable));
     }
 }
