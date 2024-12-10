@@ -24,7 +24,7 @@ public class ChatbotService {
         final RepoAnalyze repoAnalyze = repoAnalyzeRepository.findById(registeredRepoId)
                 .orElseThrow(() -> new NoExistRepoAnalyzeException("레포지토리 정보가 존재하지 않습니다."));
 
-        final List<ChatLog> chatLogs = chatLogRepository.findByRepoAnalyze(repoAnalyze);
+        final List<ChatLog> chatLogs = chatLogRepository.findTop3ByRepoAnalyzeOrderBySequenceDesc(repoAnalyze);
 
         final List<ExternalQuestToChatbotRequest.RecentChatLog> recentChatLogs = chatLogs.stream()
                 .map(chatLog -> new ExternalQuestToChatbotRequest.RecentChatLog(chatLog.getQuestion(), chatLog.getAnswer()))
@@ -38,5 +38,4 @@ public class ChatbotService {
         );
         return externalChatbotClient.questToChatbot(questToChatbotRequest);
     }
-
 }
