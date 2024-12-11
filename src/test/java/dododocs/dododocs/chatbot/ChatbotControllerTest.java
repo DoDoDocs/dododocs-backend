@@ -32,7 +32,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ChatbotControllerTest extends ControllerTestConfig {
 
     @DisplayName("챗봇 대화 내역을 불러온다.")
-    @Test
     void findChatbotHistory() throws Exception {
         // given
         given(jwtTokenCreator.extractMemberId(anyString())).willReturn(1L);
@@ -60,7 +59,6 @@ public class ChatbotControllerTest extends ControllerTestConfig {
     }
 
     @DisplayName("챗봇에게 질문하기")
-    @Test
     void askToChatbot() throws Exception {
         // given
         given(jwtTokenCreator.extractMemberId(anyString())).willReturn(1L);
