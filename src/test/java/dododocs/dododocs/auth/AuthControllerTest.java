@@ -2,6 +2,7 @@ package dododocs.dododocs.auth;
 
 
 import dododocs.dododocs.auth.dto.LoginRequest;
+import dododocs.dododocs.auth.exception.InvalidTokenException;
 import dododocs.dododocs.config.ControllerTestConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -63,5 +64,21 @@ public class AuthControllerTest extends ControllerTestConfig {
                         responseFields(fieldWithPath("accessToken").type(JsonFieldType.STRING).description("엑세스 토큰. 프론트엔드는 이 발급받은 엑세스 토큰을 로컬스토리지등에 저장해야한다."))
                 ))
                 .andExpect(status().isCreated());
+    }
+
+    @DisplayName("만료되었거나 잘못 변형된 리프레시 토큰으로 새로운 엑세스 토큰을 재발급하려 하면 상태코드 401을 리턴한다.")
+    @Test
+    void 만료되었거나_잘못_변형된_리프레시_토큰으로_새로운_엑세스_토큰을_발급하려_하면_상태코드_401을_리턴한다() throws Exception {
+        // given
+        given(authService.generateUri()).willThrow(new InvalidTokenException("변조되었거나 만료된 토큰 입니다."));
+
+        // when, then
+        mockMvc.perform(get("/api/auth/link"))
+                .andDo(print())
+                .andDo(document("auth/generate/link",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())
+                ))
+                .andExpect(status().isBadRequest());
     }
 }
