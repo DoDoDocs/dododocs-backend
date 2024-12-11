@@ -14,6 +14,8 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
 import static org.springframework.restdocs.cookies.CookieDocumentation.responseCookies;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
@@ -73,12 +75,17 @@ public class AuthControllerTest extends ControllerTestConfig {
         given(authService.generateUri()).willThrow(new InvalidTokenException("변조되었거나 만료된 토큰 입니다."));
 
         // when, then
-        mockMvc.perform(get("/api/auth/link"))
+        mockMvc.perform(get("/api/auth/link")
+                        .header("Authorization", "Bearer aaaaaa.bbbbbb.cccccc")
+                )
                 .andDo(print())
-                .andDo(document("auth/generate/link",
+                .andDo(document("auth/logout/success",
                         preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint())
+                        preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName("Authorization").description("엑세스 토큰")
+                        )
                 ))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isUnauthorized());
     }
 }
