@@ -306,7 +306,7 @@ public class DownloadFromS3Service {
             }
             return content.toString();
         } catch (Exception e) {
-            throw new NoExistRepoAnalyzeException("레포지토리의 ReadMe 파일을 다운로드하는 중 문제가 발생했습니다.");
+            throw new NoExistRepoAnalyzeException("레포지토리 결과물을 아직 생성중입니다. 잠시만 기다려주세요.");
         }
     }
 }
