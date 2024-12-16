@@ -10,7 +10,6 @@ public class FindRegisterRepoResponse {
     private String repositoryName;
     private String branchName;
     private LocalDateTime createdAt;
-    private Integer progressState;
 
     private FindRegisterRepoResponse() {
     }
@@ -18,7 +17,6 @@ public class FindRegisterRepoResponse {
     public FindRegisterRepoResponse(final RepoAnalyze repoAnalyze) {
         this.repositoryName = repoAnalyze.getRepositoryName();
         this.createdAt = repoAnalyze.getCreatedAt();
-        this.branchName = "main";
-        this.progressState = 100;
+        this.branchName = repoAnalyze.getBranchName();
     }
 }
