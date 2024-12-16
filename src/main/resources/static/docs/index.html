@@ -465,7 +465,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_ai_분석_및_문서화_요청_레포_등록">AI 분석 및 문서화 요청 (레포 등록)</a></li>
 <li><a href="#_레포지토리_등록_실패_존재하지_않는_잘못된_깃허브_레포지토리_url_이나_브랜치명을_입력_받았을_때">레포지토리 등록 실패 (존재하지 않는 (잘못된) 깃허브 레포지토리 URL 이나 브랜치명을 입력 받았을 때)</a></li>
 <li><a href="#_ai_분석_docs_결과_불러오기">AI 분석 DOCS 결과 불러오기</a></li>
-<li><a href="#_ai_분석_docs_결과_불러오기_실패_아직_ai_가_리드미_생성을_완료하지_못한_경우">AI 분석 DOCS 결과 불러오기 실패 (아직 AI 가 리드미 생성을 완료하지 못한 경우)</a></li>
+<li><a href="#_ai_분석_readme_결과_불러오기">AI 분석 README 결과 불러오기</a></li>
+<li><a href="#_ai_분석_docs_또는_readme_결과_불러오기_실패_아직_ai_가_document_생성을_완료하지_못한_경우">AI 분석 DOCS (또는 README) 결과 불러오기 실패 (아직 AI 가 Document 생성을 완료하지 못한 경우)</a></li>
 <li><a href="#_멤버가_등록한_레포지토리_리스트_조회">멤버가 등록한 레포지토리 리스트 조회</a></li>
 <li><a href="#_등록된_레포지토리_삭제">등록된 레포지토리 삭제</a></li>
 <li><a href="#_레포에서_특정_파일명을_입력했을_때_그에_대한_리드미_내용을_제공하는_api">레포에서 특정 파일명을 입력했을 때, 그에 대한 리드미 내용을 제공하는 API</a></li>
@@ -1139,12 +1140,12 @@ Content-Length: 481
 </div>
 </div>
 <div class="sect2">
-<h3 id="_ai_분석_docs_결과_불러오기_실패_아직_ai_가_리드미_생성을_완료하지_못한_경우">AI 분석 DOCS 결과 불러오기 실패 (아직 AI 가 리드미 생성을 완료하지 못한 경우)</h3>
+<h3 id="_ai_분석_readme_결과_불러오기">AI 분석 README 결과 불러오기</h3>
 <div class="sect3">
 <h4 id="_http_request_9">HTTP Request</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/download/docs/1 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/download/readme/1 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Authorization: Bearer aaaaaa.bbbbbb.cccccc
 Accept: application/json
@@ -1155,7 +1156,7 @@ Host: localhost:8080</code></pre>
 <div class="sect3">
 <h4 id="_path_variable_2">Path Variable</h4>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 2. /api/download/docs/{registeredRepoId}</caption>
+<caption class="title">Table 2. /api/download/readme/{registeredRepoId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -1178,6 +1179,84 @@ Host: localhost:8080</code></pre>
 <h4 id="_http_response_9">HTTP Response</h4>
 <div class="listingblock">
 <div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json
+Content-Length: 57
+
+{
+  "contents" : "AI 분석 결과 리드미 내용물"
+}</code></pre>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_response_body_5">Response Body</h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>contents</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">리드미 내용</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_ai_분석_docs_또는_readme_결과_불러오기_실패_아직_ai_가_document_생성을_완료하지_못한_경우">AI 분석 DOCS (또는 README) 결과 불러오기 실패 (아직 AI 가 Document 생성을 완료하지 못한 경우)</h3>
+<div class="sect3">
+<h4 id="_http_request_10">HTTP Request</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/download/docs/1 HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Authorization: Bearer aaaaaa.bbbbbb.cccccc
+Accept: application/json
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_path_variable_3">Path Variable</h4>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 3. /api/download/docs/{registeredRepoId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>registeredRepoId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">등록된 레포지토리 정보 고유 ID 값</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_http_response_10">HTTP Response</h4>
+<div class="listingblock">
+<div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 404 Not Found
 Vary: Origin
 Vary: Access-Control-Request-Method
@@ -1195,7 +1274,7 @@ Content-Length: 105
 <div class="sect2">
 <h3 id="_멤버가_등록한_레포지토리_리스트_조회">멤버가 등록한 레포지토리 리스트 조회</h3>
 <div class="sect3">
-<h4 id="_http_request_10">HTTP Request</h4>
+<h4 id="_http_request_11">HTTP Request</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/member/repos/registered HTTP/1.1
@@ -1228,7 +1307,7 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_http_response_10">HTTP Response</h4>
+<h4 id="_http_response_11">HTTP Response</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -1299,7 +1378,7 @@ Content-Length: 361
 <div class="sect2">
 <h3 id="_등록된_레포지토리_삭제">등록된 레포지토리 삭제</h3>
 <div class="sect3">
-<h4 id="_http_request_11">HTTP Request</h4>
+<h4 id="_http_request_12">HTTP Request</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/register HTTP/1.1
@@ -1361,7 +1440,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect3">
-<h4 id="_http_response_11">HTTP Response</h4>
+<h4 id="_http_response_12">HTTP Response</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 204 No Content
@@ -1375,7 +1454,7 @@ Vary: Access-Control-Request-Headers</code></pre>
 <div class="sect2">
 <h3 id="_레포에서_특정_파일명을_입력했을_때_그에_대한_리드미_내용을_제공하는_api">레포에서 특정 파일명을 입력했을 때, 그에 대한 리드미 내용을 제공하는 API</h3>
 <div class="sect3">
-<h4 id="_http_request_12">HTTP Request</h4>
+<h4 id="_http_request_13">HTTP Request</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/download/s3/detail?repositoryName=my-repo&amp;fileName=Controller_Summary.md HTTP/1.1
@@ -1433,7 +1512,7 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_http_response_12">HTTP Response</h4>
+<h4 id="_http_response_13">HTTP Response</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -1450,7 +1529,7 @@ Content-Length: 98
 </div>
 </div>
 <div class="sect4">
-<h5 id="_response_body_5">Response Body</h5>
+<h5 id="_response_body_6">Response Body</h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -1483,7 +1562,7 @@ Content-Length: 98
 <div class="sect2">
 <h3 id="_리드미_내용_수정_api">리드미 내용 수정 API</h3>
 <div class="sect3">
-<h4 id="_http_request_13">HTTP Request</h4>
+<h4 id="_http_request_14">HTTP Request</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /api/readme?repositoryName=dododocs&amp;fileName=Controller_Summary.md&amp;newContent=new%20contents~~ HTTP/1.1
@@ -1524,7 +1603,7 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_http_response_13">HTTP Response</h4>
+<h4 id="_http_response_14">HTTP Response</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 204 No Content
@@ -1543,7 +1622,7 @@ Vary: Access-Control-Request-Headers</code></pre>
 <div class="sect2">
 <h3 id="_챗봇_대화_내역_불러오기">챗봇 대화 내역 불러오기</h3>
 <div class="sect3">
-<h4 id="_http_request_14">HTTP Request</h4>
+<h4 id="_http_request_15">HTTP Request</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/chatbot/logs/1 HTTP/1.1
@@ -1576,7 +1655,7 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_http_response_14">HTTP Response</h4>
+<h4 id="_http_response_15">HTTP Response</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -1605,7 +1684,7 @@ Content-Length: 213
 <div class="sect2">
 <h3 id="_챗봇에게_질문하기">챗봇에게 질문하기</h3>
 <div class="sect3">
-<h4 id="_http_request_15">HTTP Request</h4>
+<h4 id="_http_request_16">HTTP Request</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/chatbot/question/save/1 HTTP/1.1
@@ -1667,7 +1746,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect3">
-<h4 id="_http_response_15">HTTP Response</h4>
+<h4 id="_http_response_16">HTTP Response</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -1684,7 +1763,7 @@ Content-Length: 33
 </div>
 </div>
 <div class="sect3">
-<h4 id="_response_body_6">Response Body</h4>
+<h4 id="_response_body_7">Response Body</h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -1716,7 +1795,7 @@ Content-Length: 33
 <div class="sect2">
 <h3 id="_ai_readme_분석_결과_조회_테스트_api">AI README 분석 결과 조회 테스트 API</h3>
 <div class="sect3">
-<h4 id="_http_request_16">HTTP Request</h4>
+<h4 id="_http_request_17">HTTP Request</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/analyze/result?repositoryName=Gatsby-Starter-Haon HTTP/1.1
@@ -1726,7 +1805,7 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_http_response_16">HTTP Response</h4>
+<h4 id="_http_response_17">HTTP Response</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -1753,7 +1832,7 @@ Content-Length: 11921
 <div class="sect2">
 <h3 id="_리드미_수정_테스트_api">리드미 수정 테스트 API</h3>
 <div class="sect3">
-<h4 id="_http_request_17">HTTP Request</h4>
+<h4 id="_http_request_18">HTTP Request</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /api/test/readme/update?repositoryName=dododocs&amp;fileName=Controller_Summary.md&amp;newContent=new%20contents~~ HTTP/1.1
@@ -1794,7 +1873,7 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_http_response_17">HTTP Response</h4>
+<h4 id="_http_response_18">HTTP Response</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 204 No Content
