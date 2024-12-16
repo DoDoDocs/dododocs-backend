@@ -49,7 +49,7 @@ public class DownloadControllerTest extends ControllerTestConfig {
 
 
         // when, then
-        mockMvc.perform(post("/api/download/s3")
+        mockMvc.perform(post("/api/download/readme")
                         .header("Authorization", "Bearer aaaaaa.bbbbbb.cccccc")
                         .queryParam("repositoryName", "dododocs")
                         .accept(MediaType.APPLICATION_JSON)
@@ -85,7 +85,7 @@ public class DownloadControllerTest extends ControllerTestConfig {
                 .when(downloadFromS3Service).downloadAndProcessZip(anyString());
 
         // when, then
-        mockMvc.perform(post("/api/download/s3")
+        mockMvc.perform(post("/api/download/readme")
                         .header("Authorization", "Bearer aaaaaa.bbbbbb.cccccc")
                         .queryParam("repositoryName", "dododocs")
                          .accept(MediaType.APPLICATION_JSON)
