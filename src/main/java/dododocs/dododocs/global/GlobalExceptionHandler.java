@@ -1,6 +1,7 @@
 package dododocs.dododocs.global;
 
 import dododocs.dododocs.analyze.exception.NoExistGitRepoException;
+import dododocs.dododocs.analyze.exception.NoExistRepoAnalyzeException;
 import dododocs.dododocs.auth.exception.InvalidTokenException;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -21,6 +22,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({
             NoExistGitRepoException.class,
+            NoExistRepoAnalyzeException.class,
     })
     public ResponseEntity<ExceptionResponse> handleNotFoundException(final RuntimeException e) {
         logger.error(e.getMessage(), e);

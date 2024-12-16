@@ -51,7 +51,6 @@ public class DownloadControllerTest extends ControllerTestConfig {
         // when, then
         mockMvc.perform(RestDocumentationRequestBuilders.post("/api/download/readme/{registeredRepoId}", 1L)
                         .header("Authorization", "Bearer aaaaaa.bbbbbb.cccccc")
-                        .queryParam("repositoryName", "dododocs")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -60,9 +59,6 @@ public class DownloadControllerTest extends ControllerTestConfig {
                         preprocessResponse(prettyPrint()),
                         requestHeaders(
                                 headerWithName("Authorization").description("엑세스 토큰")
-                        ),
-                        queryParameters(
-                                parameterWithName("repositoryName").description("다운로드 받을 레포명")
                         ),
                         pathParameters(
                                 parameterWithName("registeredRepoId").description("등록된 레포지토리 정보 고유 ID 값")
@@ -80,9 +76,9 @@ public class DownloadControllerTest extends ControllerTestConfig {
 
     }
 
-    @DisplayName("아직 AI 분석 결과가 완료되지 않았다면 상태코드 400을 리턴한다.")
+    @DisplayName("아직 AI 분석 결과가 완료되지 않았다면 상태코드 404를 리턴한다.")
     @Test
-    void 아직_AI_분석_결과가_완료되지_않았다면_상태코드_400을_리턴한다() throws Exception {
+    void 아직_AI_분석_결과가_완료되지_않았다면_상태코드_404을_리턴한다() throws Exception {
         // given
         given(authService.extractMemberId(anyString())).willReturn(1L);
         doThrow(new NoExistRepoAnalyzeException("레포지토리 결과물을 아직 생성중입니다. 잠시만 기다려주세요."))
@@ -91,21 +87,17 @@ public class DownloadControllerTest extends ControllerTestConfig {
         // when, then
         mockMvc.perform(RestDocumentationRequestBuilders.post("/api/download/readme/{registeredRepoId}", 1L) // registeredRepoId 전달
                         .header("Authorization", "Bearer aaaaaa.bbbbbb.cccccc")
-                        .queryParam("repositoryName", "dododocs")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andDo(document("analyze/download/fail",
+                .andDo(document("q/download/fail",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         pathParameters(
                                 parameterWithName("registeredRepoId").description("등록된 레포지토리 정보 고유 ID 값")
-                        ),
-                        queryParameters(
-                                parameterWithName("repositoryName").description("다운로드 받을 레포명")
                         )
                 ))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
 
     }
 
