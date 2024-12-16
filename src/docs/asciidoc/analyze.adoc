@@ -21,6 +21,20 @@ include::{snippets}/analyze/upload/success/request-fields.adoc[]
 
 include::{snippets}/analyze/upload/success/http-response.adoc[]
 
+=== 레포지토리 등록 실패 (존재하지 않는 (잘못된) 깃허브 레포지토리 URL 이나 브랜치명을 입력 받았을 때)
+
+==== HTTP Request
+
+include::{snippets}/analyze/upload/fail/noExistRepoInfo/http-request.adoc[]
+
+===== Request Body
+
+include::{snippets}/analyze/upload/fail/noExistRepoInfo/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/analyze/upload/fail/noExistRepoInfo/http-response.adoc[]
+
 === AI 분석 및 문서화 결과 불러오기
 
 ==== HTTP Request

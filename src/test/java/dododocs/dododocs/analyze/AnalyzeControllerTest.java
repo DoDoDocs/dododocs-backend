@@ -100,7 +100,7 @@ public class AnalyzeControllerTest extends ControllerTestConfig {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new UploadGitRepoContentToS3Request("Invalid-Git-Repo-Name", "main222", true, true))))
                 .andDo(print())
-                .andDo(document("analyze/upload/fail/max/size",
+                .andDo(document("analyze/upload/fail/noExistRepoInfo",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestHeaders(
