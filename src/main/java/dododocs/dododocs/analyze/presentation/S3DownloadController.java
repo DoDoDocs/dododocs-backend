@@ -28,13 +28,13 @@ public class S3DownloadController {
     @PostMapping("/download/readme/{registeredRepoId}")
     public ResponseEntity<DownloadAiAnalyzeResponse> downloadAIReadmeAnalyzeResultFromS3(@Authentication final Accessor accessor,
                                                                    @PathVariable final Long registeredRepoId) throws Exception {
-        return ResponseEntity.ok(s3DownloadService.downloadAndProcessZipReadmeInfo(registeredRepoId));
+        return ResponseEntity.ok(s3DownloadService.downloadAndProcessZipDocsInfo(registeredRepoId));
     }
 
     @PostMapping("/download/docs/{registeredRepoId}")
     public ResponseEntity<DownloadAiAnalyzeResponse> downloadAIDocumentAnalyzeResultFromS3(@Authentication final Accessor accessor,
                                                                       @PathVariable final Long registeredRepoId) throws Exception {
-        return ResponseEntity.ok(s3DownloadService.downloadAndProcessZipReadmeInfo(registeredRepoId));
+        return ResponseEntity.ok(s3DownloadService.downloadAndProcessZipDocsInfo(registeredRepoId));
     }
 
     @GetMapping("/download/s3/detail")

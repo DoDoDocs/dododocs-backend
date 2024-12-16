@@ -24,11 +24,11 @@ public class DownloadFromS3Service {
     private final AmazonS3Client amazonS3Client;
     private final String bucketName = "haon-dododocs";
 
-    public DownloadAiAnalyzeResponse downloadAndProcessZipReadmeInfo(final long registeredRepoId) throws IOException {
+    public DownloadAiAnalyzeResponse downloadAndProcessZipDocsInfo(final long registeredRepoId) throws IOException {
         final RepoAnalyze repoAnalyze = repoAnalyzeRepository.findById(registeredRepoId)
                 .orElseThrow(() -> new NoExistRepoAnalyzeException("레포지토리 정보가 존재하지 않습니다."));
 
-        final String s3Key = repoAnalyze.getReadMeKey();
+        final String s3Key = repoAnalyze.getDocsKey();
 
         // 1. S3에서 ZIP 파일 다운로드
         File zipFile = downloadZipFromS3(bucketName, s3Key);
