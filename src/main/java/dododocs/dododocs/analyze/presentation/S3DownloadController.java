@@ -25,15 +25,16 @@ public class S3DownloadController {
     private final DownloadFromS3Service s3DownloadService;
     private final DownloadFromS3Service downloadFromS3Service;
 
-    @PostMapping("/download/readme")
-    public DownloadAiAnalyzeResponse downloadAIAnalyzeResultFromS3(@RequestParam final String repositoryName) throws Exception {
-        return s3DownloadService.downloadAndProcessZip(repositoryName);
+    @PostMapping("/download/readme/{registeredRepoId}")
+    public DownloadAiAnalyzeResponse downloadAIAnalyzeResultFromS3(@Authentication final Accessor accessor,
+                                                                   @PathVariable final Long registeredRepoId) throws Exception {
+        return s3DownloadService.downloadAndProcessZipReadmeInfo(registeredRepoId);
     }
 
     @GetMapping("/download/s3/detail")
     public FileContentResponse getFileContentByFileName(@RequestParam final String repositoryName,
                                                         @RequestParam final String fileName) throws Exception {
-        DownloadAiAnalyzeResponse response = s3DownloadService.downloadAndProcessZip(repositoryName);
+        DownloadAiAnalyzeResponse response = s3DownloadService.downloadAndProcessZipReadmeInfoByRepoName(repositoryName);
 
         // 검색 로직
         return response.getSummaryFiles().stream()

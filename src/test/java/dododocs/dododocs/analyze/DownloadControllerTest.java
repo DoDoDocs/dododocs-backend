@@ -8,6 +8,7 @@ import dododocs.dododocs.config.ControllerTestConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 
 import java.io.FileNotFoundException;
@@ -24,8 +25,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -38,7 +38,7 @@ public class DownloadControllerTest extends ControllerTestConfig {
     void AI_문서화_결과를_다운로드_받고_상태코드_200을_리턴한다() throws Exception {
         // given
         given(jwtTokenCreator.extractMemberId(anyString())).willReturn(1L);
-        given(downloadFromS3Service.downloadAndProcessZip(anyString()))
+        given(downloadFromS3Service.downloadAndProcessZipReadmeInfo(anyLong()))
                 .willReturn(new DownloadAiAnalyzeResponse(
                         List.of(new DownloadAiAnalyzeResponse.FileDetail("Controller_Summary.md", "전체 컨트롤러 요약 내용"),
                                 new DownloadAiAnalyzeResponse.FileDetail("Service_Summary.md", "전체 서비스 요약 내용")),
@@ -49,7 +49,7 @@ public class DownloadControllerTest extends ControllerTestConfig {
 
 
         // when, then
-        mockMvc.perform(post("/api/download/readme")
+        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/download/readme/{registeredRepoId}", 1L)
                         .header("Authorization", "Bearer aaaaaa.bbbbbb.cccccc")
                         .queryParam("repositoryName", "dododocs")
                         .accept(MediaType.APPLICATION_JSON)
@@ -64,6 +64,9 @@ public class DownloadControllerTest extends ControllerTestConfig {
                         queryParameters(
                                 parameterWithName("repositoryName").description("다운로드 받을 레포명")
                         ),
+                        pathParameters(
+                                parameterWithName("registeredRepoId").description("등록된 레포지토리 정보 고유 ID 값")
+                        ),
                         responseFields(
                                 fieldWithPath("summaryFiles[]").type(JsonFieldType.ARRAY).description("요약 파일 목록"),
                                 fieldWithPath("summaryFiles[].fileName").type(JsonFieldType.STRING).description("요약 파일 이름"),
@@ -74,6 +77,7 @@ public class DownloadControllerTest extends ControllerTestConfig {
                         )
                 ))
                 .andExpect(status().isOk());
+
     }
 
     @DisplayName("아직 AI 분석 결과가 완료되지 않았다면 상태코드 400을 리턴한다.")
@@ -82,23 +86,27 @@ public class DownloadControllerTest extends ControllerTestConfig {
         // given
         given(authService.extractMemberId(anyString())).willReturn(1L);
         doThrow(new NoExistRepoAnalyzeException("레포지토리 결과물을 아직 생성중입니다. 잠시만 기다려주세요."))
-                .when(downloadFromS3Service).downloadAndProcessZip(anyString());
+                .when(downloadFromS3Service).downloadAndProcessZipReadmeInfo(anyLong());
 
         // when, then
-        mockMvc.perform(post("/api/download/readme")
+        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/download/readme/{registeredRepoId}", 1L) // registeredRepoId 전달
                         .header("Authorization", "Bearer aaaaaa.bbbbbb.cccccc")
                         .queryParam("repositoryName", "dododocs")
-                         .accept(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andDo(document("analyze/download/fail",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("registeredRepoId").description("등록된 레포지토리 정보 고유 ID 값")
+                        ),
                         queryParameters(
                                 parameterWithName("repositoryName").description("다운로드 받을 레포명")
                         )
                 ))
                 .andExpect(status().isBadRequest());
+
     }
 
     @DisplayName("레포에서 특정 파일명 입력했을 때, 그에 대한 리드미 내용을 제공한다.")
@@ -106,7 +114,7 @@ public class DownloadControllerTest extends ControllerTestConfig {
     void getFileContentByFileName_ValidFile_ReturnsContent() throws Exception {
         // given
         given(authService.extractMemberId(anyString())).willReturn(1L);
-        given(downloadFromS3Service.downloadAndProcessZip(anyString())).willReturn(
+        given(downloadFromS3Service.downloadAndProcessZipReadmeInfoByRepoName(anyString())).willReturn(
                 new DownloadAiAnalyzeResponse(
                         List.of(new DownloadAiAnalyzeResponse.FileDetail("Controller_Summary.md", "전체 컨트롤러 요약 내용")),
                         List.of(new DownloadAiAnalyzeResponse.FileDetail("AuthService.md", "설명2"))
