@@ -247,8 +247,8 @@ public class DownloadFromS3Service {
         amazonS3Client.putObject(bucketName, s3Key, zipFile);
     }
 
-    public DownloadAiAnalyzeResponse downloadAndProcessZipReadmeInfoByRepoName(final String name) throws IOException {
-        final RepoAnalyze repoAnalyze = repoAnalyzeRepository.findByRepositoryName(name)
+    public DownloadAiAnalyzeResponse downloadAndProcessZipReadmeInfoByRepoName(final long repoId) throws IOException {
+        final RepoAnalyze repoAnalyze = repoAnalyzeRepository.findById(repoId)
                 .orElseThrow(() -> new NoExistRepoAnalyzeException("레포지토리 정보가 존재하지 않습니다."));
 
         System.out.println("========================123123123123 🔥");

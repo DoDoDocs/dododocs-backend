@@ -140,7 +140,7 @@ public class DownloadControllerTest extends ControllerTestConfig {
     void getFileContentByFileName_ValidFile_ReturnsContent() throws Exception {
         // given
         given(authService.extractMemberId(anyString())).willReturn(1L);
-        given(downloadFromS3Service.downloadAndProcessZipReadmeInfoByRepoName(anyString())).willReturn(
+        given(downloadFromS3Service.downloadAndProcessZipReadmeInfoByRepoName(anyLong())).willReturn(
                 new DownloadAiAnalyzeResponse(
                         List.of(new DownloadAiAnalyzeResponse.FileDetail("Controller_Summary.md", "전체 컨트롤러 요약 내용")),
                         List.of(new DownloadAiAnalyzeResponse.FileDetail("AuthService.md", "설명2"))
@@ -148,9 +148,8 @@ public class DownloadControllerTest extends ControllerTestConfig {
         );
 
         // when, then
-        mockMvc.perform(get("/api/download/s3/detail")
+        mockMvc.perform(get("/api/download/s3/detail/{registeredRepoId}", 1)
                         .header("Authorization", "Bearer aaaaaa.bbbbbb.cccccc")
-                        .queryParam("repositoryName", "my-repo")
                         .queryParam("fileName", "Controller_Summary.md")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -162,7 +161,6 @@ public class DownloadControllerTest extends ControllerTestConfig {
                                 headerWithName("Authorization").description("토큰")
                         ),
                         queryParameters(
-                                parameterWithName("repositoryName").description("조회할 레포 이름"),
                                 parameterWithName("fileName").description("조회할 파일 이름")
                         ),
                         responseFields(

@@ -38,10 +38,10 @@ public class S3DownloadController {
         return ResponseEntity.ok(s3DownloadService.downloadAndProcessZipReadmeInfo(registeredRepoId));
     }
 
-    @GetMapping("/download/s3/detail")
-    public FileContentResponse getFileContentByFileName(@RequestParam final String repositoryName,
+    @GetMapping("/download/s3/detail/{registeredRepoId}")
+    public FileContentResponse getFileContentByFileName(@PathVariable final Long registeredRepoId,
                                                         @RequestParam final String fileName) throws Exception {
-        DownloadAiAnalyzeResponse response = s3DownloadService.downloadAndProcessZipReadmeInfoByRepoName(repositoryName);
+        DownloadAiAnalyzeResponse response = s3DownloadService.downloadAndProcessZipReadmeInfoByRepoName(registeredRepoId);
 
         // 검색 로직
         return response.getSummaryFiles().stream()
