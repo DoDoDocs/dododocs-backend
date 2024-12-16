@@ -11,6 +11,7 @@ import dododocs.dododocs.analyze.dto.ExternalAiZipAnalyzeResponse;
 import dododocs.dododocs.analyze.dto.RepositoryContentDto;
 import dododocs.dododocs.analyze.dto.UploadGitRepoContentToS3Request;
 import dododocs.dododocs.analyze.exception.MaxSizeRepoRegiserException;
+import dododocs.dododocs.analyze.exception.NoExistGitRepoException;
 import dododocs.dododocs.analyze.infrastructure.ExternalAiZipAnalyzeClient;
 import dododocs.dododocs.auth.domain.repository.MemberRepository;
 import dododocs.dododocs.auth.exception.NoExistMemberException;
@@ -40,8 +41,6 @@ import java.util.zip.ZipOutputStream;
 @Service
 public class AnalyzeService {
     private static final Integer REPO_REGISTER_MAX_SIZE = 3;
-    private final ObjectMapper objectMapper = new ObjectMapper();
-    private final RestTemplate restTemplate;
     private final ExternalAiZipAnalyzeClient externalAiZipAnalyzeClient;
     private final MemberRepository memberRepository;
     private final AmazonS3Client amazonS3Client;
@@ -66,6 +65,7 @@ public class AnalyzeService {
 
         // 개인 소유자로 먼저 시도
         String ownerName = member.getOriginName();
+
         boolean success = tryUploadFromOwner(ownerName, repoName, branchName);
 
         // 개인 소유에서 찾지 못하면 조직 소유로 검색
@@ -164,11 +164,14 @@ public class AnalyzeService {
             System.out.println("===================");
             System.out.println(e.getMessage());
             System.out.println("===================");
-            System.out.println(e.getCause());
+            throw new NoExistGitRepoException("존재하지 않는 레포지토리 또는 브랜치입니다.");
         }
+
         // S3에 업로드
         try {
+            System.out.println("qweqweqweq-wep-=qw-=peqw-=eqwp-=ep-q=wep-=qwep=-qwe=p-qwep=-qwp=-e");
             amazonS3Client.putObject("haon-dododocs", bucketDetailName, tempFile);
+            System.out.println("wqjejqiweiqwoeiqjwoijoiqwejoiqweoijqowie");
         } catch (Exception e) {
             System.out.println("s3 에 업로드하다가 애러터짐");
             System.out.println("===================");

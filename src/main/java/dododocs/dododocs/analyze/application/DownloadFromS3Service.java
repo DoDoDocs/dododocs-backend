@@ -28,6 +28,13 @@ public class DownloadFromS3Service {
         final RepoAnalyze repoAnalyze = repoAnalyzeRepository.findByRepositoryName(repoName)
                 .orElseThrow(() -> new NoExistRepoAnalyzeException("레포지토리 정보가 존재하지 않습니다."));
 
+        System.out.println("========================123123123123 🔥");
+        System.out.println(repoAnalyze.getBranchName());
+        System.out.println(repoAnalyze.getRepoUrl());
+        System.out.println(repoAnalyze.getReadMeKey());
+        System.out.println(repoAnalyze.getRepositoryName());
+        System.out.println("========================123123123123 🔥");
+
         final String s3Key = repoAnalyze.getDocsKey();
 
         // 1. S3에서 ZIP 파일 다운로드
@@ -48,6 +55,11 @@ public class DownloadFromS3Service {
 
     private File downloadZipFromS3(String bucketName, String s3Key) throws IOException {
         File tempZipFile = File.createTempFile("s3-download", ".zip");
+
+        System.out.println("===============================================");
+        System.out.println("bucketName:" + bucketName);
+        System.out.println("s3key:" + s3Key);
+        System.out.println("===============================================");
 
         try (InputStream inputStream = amazonS3Client.getObject(bucketName, s3Key).getObjectContent();
              FileOutputStream outputStream = new FileOutputStream(tempZipFile)) {
