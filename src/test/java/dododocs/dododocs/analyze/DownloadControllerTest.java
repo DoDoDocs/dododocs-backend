@@ -33,12 +33,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class DownloadControllerTest extends ControllerTestConfig {
 
-    @DisplayName("AI 문서화 결과를 다운로드 받고 상태코드 200을 리턴한다.")
+    @DisplayName("Docs 를 다운로드 받고 상태코드 200을 리턴한다.")
     @Test
     void AI_문서화_결과를_다운로드_받고_상태코드_200을_리턴한다() throws Exception {
         // given
         given(jwtTokenCreator.extractMemberId(anyString())).willReturn(1L);
-        given(downloadFromS3Service.downloadAndProcessZipReadmeInfo(anyLong()))
+        given(downloadFromS3Service.downloadAndProcessZipDocsInfo(anyLong()))
                 .willReturn(new DownloadAiAnalyzeResponse(
                         List.of(new DownloadAiAnalyzeResponse.FileDetail("Controller_Summary.md", "전체 컨트롤러 요약 내용"),
                                 new DownloadAiAnalyzeResponse.FileDetail("Service_Summary.md", "전체 서비스 요약 내용")),
@@ -49,12 +49,12 @@ public class DownloadControllerTest extends ControllerTestConfig {
 
 
         // when, then
-        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/download/readme/{registeredRepoId}", 1L)
+        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/download/docs/{registeredRepoId}", 1L)
                         .header("Authorization", "Bearer aaaaaa.bbbbbb.cccccc")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andDo(document("analyze/download/success",
+                .andDo(document("analyze/download/docs/success",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestHeaders(
@@ -82,15 +82,15 @@ public class DownloadControllerTest extends ControllerTestConfig {
         // given
         given(authService.extractMemberId(anyString())).willReturn(1L);
         doThrow(new NoExistRepoAnalyzeException("레포지토리 결과물을 아직 생성중입니다. 잠시만 기다려주세요."))
-                .when(downloadFromS3Service).downloadAndProcessZipReadmeInfo(anyLong());
+                .when(downloadFromS3Service).downloadAndProcessZipDocsInfo(anyLong());
 
         // when, then
-        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/download/readme/{registeredRepoId}", 1L) // registeredRepoId 전달
+        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/download/docs/{registeredRepoId}", 1L) // registeredRepoId 전달
                         .header("Authorization", "Bearer aaaaaa.bbbbbb.cccccc")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andDo(document("analyze/download/fail",
+                .andDo(document("analyze/download/docs/fail",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         pathParameters(

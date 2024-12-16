@@ -4,6 +4,7 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import dododocs.dododocs.analyze.domain.RepoAnalyze;
 import dododocs.dododocs.analyze.domain.repository.RepoAnalyzeRepository;
 import dododocs.dododocs.analyze.dto.DownloadAiAnalyzeResponse;
+import dododocs.dododocs.analyze.dto.DownloadReadmeAnalyzeResponse;
 import dododocs.dododocs.analyze.exception.NoExistRepoAnalyzeException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -273,5 +274,39 @@ public class DownloadFromS3Service {
         deleteDirectory(extractedDir);
 
         return new DownloadAiAnalyzeResponse(categorizedFiles.get("summary"), categorizedFiles.get("regular"));
+    }
+
+
+    public DownloadReadmeAnalyzeResponse downloadAndProcessZipReadmeInfo(final long repoRegisterId) throws IOException {
+        // 1. 레포지토리 정보 확인
+        RepoAnalyze repoAnalyze = repoAnalyzeRepository.findById(repoRegisterId)
+                .orElseThrow(() -> new NoExistRepoAnalyzeException("레포지토리 정보가 존재하지 않습니다."));
+
+        // 2. readMeKey 가져오기
+        String readMeKey = repoAnalyze.getReadMeKey();
+        if (readMeKey == null || readMeKey.isEmpty()) {
+            throw new NoExistRepoAnalyzeException("readMeKey가 존재하지 않습니다.");
+        }
+
+        // 3. S3에서 파일 다운로드
+        String readMeContent = downloadFileFromS3(bucketName, readMeKey);
+
+        // 4. 결과 반환
+        return new DownloadReadmeAnalyzeResponse(readMeContent);
+    }
+
+    private String downloadFileFromS3(String bucketName, String s3Key) throws IOException {
+        try (InputStream inputStream = amazonS3Client.getObject(bucketName, s3Key).getObjectContent();
+             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+
+            StringBuilder content = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                content.append(line).append(System.lineSeparator());
+            }
+            return content.toString();
+        } catch (Exception e) {
+            throw new NoExistRepoAnalyzeException("레포지토리의 ReadMe 파일을 다운로드하는 중 문제가 발생했습니다.");
+        }
     }
 }
