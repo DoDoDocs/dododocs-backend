@@ -1142,8 +1142,53 @@ Content-Length: 481
 <h3 id="_ai_분석_readme_결과_불러오기_실패_아직_ai_가_리드미_생성을_완료하지_못한_경우">AI 분석 README 결과 불러오기 실패 (아직 AI 가 리드미 생성을 완료하지 못한 경우)</h3>
 <div class="sect3">
 <h4 id="_http_request_9">HTTP Request</h4>
-<div class="paragraph">
-<p>include::/Users/goorm/Desktop/dododocs/build/generated-snippets/download/fail</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/download/readme/1 HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Authorization: Bearer aaaaaa.bbbbbb.cccccc
+Accept: application/json
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_path_variable_2">Path Variable</h4>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. /api/download/readme/{registeredRepoId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>registeredRepoId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">등록된 레포지토리 정보 고유 ID 값</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_http_response_9">HTTP Response</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 404 Not Found
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json
+Content-Length: 105
+
+{
+  "message" : "레포지토리 결과물을 아직 생성중입니다. 잠시만 기다려주세요."
+}</code></pre>
+</div>
 </div>
 </div>
 </div>
@@ -1183,7 +1228,7 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_http_response_9">HTTP Response</h4>
+<h4 id="_http_response_10">HTTP Response</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -1316,7 +1361,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect3">
-<h4 id="_http_response_10">HTTP Response</h4>
+<h4 id="_http_response_11">HTTP Response</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 204 No Content
@@ -1388,7 +1433,7 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_http_response_11">HTTP Response</h4>
+<h4 id="_http_response_12">HTTP Response</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -1479,7 +1524,7 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_http_response_12">HTTP Response</h4>
+<h4 id="_http_response_13">HTTP Response</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 204 No Content
@@ -1531,7 +1576,7 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_http_response_13">HTTP Response</h4>
+<h4 id="_http_response_14">HTTP Response</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -1622,7 +1667,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect3">
-<h4 id="_http_response_14">HTTP Response</h4>
+<h4 id="_http_response_15">HTTP Response</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -1681,7 +1726,7 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_http_response_15">HTTP Response</h4>
+<h4 id="_http_response_16">HTTP Response</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -1749,7 +1794,7 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_http_response_16">HTTP Response</h4>
+<h4 id="_http_response_17">HTTP Response</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 204 No Content

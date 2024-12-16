@@ -74,6 +74,7 @@ public class AnalyzeService {
             for (String orgName : organizationNames) {
                 success = tryUploadFromOwner(orgName, repoName, branchName);
                 if (success) {
+                    ownerName = orgName;
                     break;
                 }
             }
@@ -105,49 +106,6 @@ public class AnalyzeService {
         );
     }
 
-    /*
-        List<String> readmeBlocks = new ArrayList<>();
-
-        if(uploadGitRepoContentToS3Request.isPreviewBlock()) {
-            readmeBlocks.add("PREVIEW_BLOCK");
-        }
-
-        if(uploadGitRepoContentToS3Request.isAnalysisBlock()) {
-            readmeBlocks.add("ANALYSIS_BLOCK");
-        }
-
-        if(uploadGitRepoContentToS3Request.isStructureBlock()) {
-            readmeBlocks.add("STRUCTURE_BLOCK");
-        }
-
-        if(uploadGitRepoContentToS3Request.isStartBlock()) {
-            readmeBlocks.add("START_BLOCK");
-        }
-
-        if(uploadGitRepoContentToS3Request.isMotivationBlock()) {
-            readmeBlocks.add("MOTIVATION_BLOCK");
-        }
-
-        if(uploadGitRepoContentToS3Request.isDemoBlock()) {
-            readmeBlocks.add("DEMO_BLOCK");
-        }
-
-        if(uploadGitRepoContentToS3Request.isDeploymentBlock()) {
-            readmeBlocks.add("DEPLOYMENT_BLOCK");
-        }
-
-        if(uploadGitRepoContentToS3Request.isContributorsBlock()) {
-            readmeBlocks.add("CONTRIBUTORS_BLOCK");
-        }
-
-        if(uploadGitRepoContentToS3Request.isFaqBlock()) {
-            readmeBlocks.add("FAQ_BLOCK");
-        }
-
-        if(uploadGitRepoContentToS3Request.isPerformanceBlock()) {
-            readmeBlocks.add("PERFORMANCE_BLOCK");
-        } */
-
     // 특정 소유자(개인 또는 조직)에서 레포지토리를 찾아 업로드 시도
     private boolean tryUploadFromOwner(String ownerName, String repoName, String branchName) {
         String bucketDetailName = ownerName + "-" + repoName;
@@ -164,7 +122,8 @@ public class AnalyzeService {
             System.out.println("===================");
             System.out.println(e.getMessage());
             System.out.println("===================");
-            throw new NoExistGitRepoException("존재하지 않는 레포지토리 또는 브랜치입니다.");
+            // throw new NoExistGitRepoException("존재하지 않는 레포지토리 또는 브랜치입니다.");
+            return false;
         }
 
         // S3에 업로드
@@ -178,6 +137,7 @@ public class AnalyzeService {
             System.out.println(e.getMessage());
             System.out.println("===================");
             System.out.println(e.getCause());
+            return false;
         }
 
         // 업로드 후 임시 파일 삭제

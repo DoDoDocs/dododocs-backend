@@ -28,14 +28,7 @@ public class DownloadFromS3Service {
         final RepoAnalyze repoAnalyze = repoAnalyzeRepository.findById(registeredRepoId)
                 .orElseThrow(() -> new NoExistRepoAnalyzeException("레포지토리 정보가 존재하지 않습니다."));
 
-        System.out.println("========================123123123123 🔥");
-        System.out.println(repoAnalyze.getBranchName());
-        System.out.println(repoAnalyze.getRepoUrl());
-        System.out.println(repoAnalyze.getReadMeKey());
-        System.out.println(repoAnalyze.getRepositoryName());
-        System.out.println("========================123123123123 🔥");
-
-        final String s3Key = repoAnalyze.getDocsKey();
+        final String s3Key = repoAnalyze.getReadMeKey();
 
         // 1. S3에서 ZIP 파일 다운로드
         File zipFile = downloadZipFromS3(bucketName, s3Key);

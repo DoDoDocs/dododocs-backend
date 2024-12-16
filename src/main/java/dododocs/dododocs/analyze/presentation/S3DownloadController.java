@@ -26,9 +26,15 @@ public class S3DownloadController {
     private final DownloadFromS3Service downloadFromS3Service;
 
     @PostMapping("/download/readme/{registeredRepoId}")
-    public DownloadAiAnalyzeResponse downloadAIAnalyzeResultFromS3(@Authentication final Accessor accessor,
+    public ResponseEntity<DownloadAiAnalyzeResponse> downloadAIReadmeAnalyzeResultFromS3(@Authentication final Accessor accessor,
                                                                    @PathVariable final Long registeredRepoId) throws Exception {
-        return s3DownloadService.downloadAndProcessZipReadmeInfo(registeredRepoId);
+        return ResponseEntity.ok(s3DownloadService.downloadAndProcessZipReadmeInfo(registeredRepoId));
+    }
+
+    @PostMapping("/download/docs/{registeredRepoId}")
+    public ResponseEntity<DownloadAiAnalyzeResponse> downloadAIDocumentAnalyzeResultFromS3(@Authentication final Accessor accessor,
+                                                                      @PathVariable final Long registeredRepoId) throws Exception {
+        return ResponseEntity.ok(s3DownloadService.downloadAndProcessZipReadmeInfo(registeredRepoId));
     }
 
     @GetMapping("/download/s3/detail")
