@@ -80,6 +80,10 @@ public class AnalyzeService {
             }
         }
 
+        if(!success) {
+            throw new NoExistGitRepoException("존재하지 않는 레포지토리 또는 브랜치입니다.");
+        }
+
         String s3Key = ownerName + "-" + repoName;
         String repoUrl = String.format("https://github.com/%s/%s", ownerName, repoName);
 
