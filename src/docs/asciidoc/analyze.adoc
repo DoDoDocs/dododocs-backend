@@ -53,7 +53,26 @@ include::{snippets}/analyze/download/docs/success/http-response.adoc[]
 
 include::{snippets}/analyze/download/docs/success/response-fields.adoc[]
 
-=== AI 분석 DOCS 결과 불러오기 실패 (아직 AI 가 Document 생성을 완료하지 못한 경우)
+=== AI 분석 README 결과 불러오기
+
+==== HTTP Request
+
+include::{snippets}/analyze/download/readme/success/http-request.adoc[]
+
+==== Path Variable
+
+include::{snippets}/analyze/download/readme/success/path-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/analyze/download/readme/success/http-response.adoc[]
+
+===== Response Body
+
+include::{snippets}/analyze/download/readme/success/response-fields.adoc[]
+
+
+=== AI 분석 DOCS (또는 README) 결과 불러오기 실패 (아직 AI 가 Document 생성을 완료하지 못한 경우)
 
 ==== HTTP Request
 
