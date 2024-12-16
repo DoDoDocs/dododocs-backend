@@ -2,6 +2,7 @@ package dododocs.dododocs.analyze;
 
 import dododocs.dododocs.analyze.dto.DownloadAiAnalyzeRequest;
 import dododocs.dododocs.analyze.dto.DownloadAiAnalyzeResponse;
+import dododocs.dododocs.analyze.dto.DownloadReadmeAnalyzeResponse;
 import dododocs.dododocs.analyze.exception.NoExistRepoAnalyzeException;
 import dododocs.dododocs.auth.dto.LoginRequest;
 import dododocs.dododocs.config.ControllerTestConfig;
@@ -76,6 +77,40 @@ public class DownloadControllerTest extends ControllerTestConfig {
 
     }
 
+    @DisplayName("Readme 를 다운로드 받고 상태코드 200을 리턴한다.")
+    @Test
+    void AI_Readme_결과를_다운로드_받고_상태코드_200을_리턴한다() throws Exception {
+        // given
+        given(jwtTokenCreator.extractMemberId(anyString())).willReturn(1L);
+        given(downloadFromS3Service.downloadAndProcessZipReadmeInfo(anyLong()))
+                .willReturn(new DownloadReadmeAnalyzeResponse(
+                        "AI 분석 결과 리드미 내용물"
+                ));
+
+
+        // when, then
+        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/download/readme/{registeredRepoId}", 1L)
+                        .header("Authorization", "Bearer aaaaaa.bbbbbb.cccccc")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andDo(document("analyze/download/readme/success",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName("Authorization").description("엑세스 토큰")
+                        ),
+                        pathParameters(
+                                parameterWithName("registeredRepoId").description("등록된 레포지토리 정보 고유 ID 값")
+                        ),
+                        responseFields(
+                                fieldWithPath("contents").type(JsonFieldType.STRING).description("리드미 내용")
+                        )
+                ))
+                .andExpect(status().isOk());
+
+    }
+
     @DisplayName("아직 AI 분석 결과가 완료되지 않았다면 상태코드 404를 리턴한다.")
     @Test
     void 아직_AI_분석_결과가_완료되지_않았다면_상태코드_404을_리턴한다() throws Exception {
@@ -98,7 +133,6 @@ public class DownloadControllerTest extends ControllerTestConfig {
                         )
                 ))
                 .andExpect(status().isNotFound());
-
     }
 
     @DisplayName("레포에서 특정 파일명 입력했을 때, 그에 대한 리드미 내용을 제공한다.")
