@@ -25,6 +25,7 @@ public class FindRegisterRepoResponse {
     }
 
     public FindRegisterRepoResponse(final RepoAnalyze repoAnalyze) {
+        this.registeredRepoId = repoAnalyze.getId();
         this.repositoryName = repoAnalyze.getRepositoryName();
         this.branchName = repoAnalyze.getBranchName();
 
