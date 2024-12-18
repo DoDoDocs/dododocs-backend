@@ -90,9 +90,13 @@ public class MemberControllerTest extends ControllerTestConfig {
                         ),
                         responseFields(
                                 fieldWithPath("findRegisterRepoResponses[]").description("등록한 레포지토리 리스트"),
+                                fieldWithPath("findRegisterRepoResponses[].registeredRepoId").description("등록된 레포 고유 ID"),
                                 fieldWithPath("findRegisterRepoResponses[].repositoryName").description("레포 이름"),
                                 fieldWithPath("findRegisterRepoResponses[].branchName").description("레포 브랜치 명"),
-                                fieldWithPath("findRegisterRepoResponses[].createdAt").description("레포 등록날짜")
+                                fieldWithPath("findRegisterRepoResponses[].createdAt").description("레포 등록날짜"),
+                                fieldWithPath("findRegisterRepoResponses[].readmeComplete").description("리드미 생성 완료(준비) 여부"),
+                                fieldWithPath("findRegisterRepoResponses[].chatbotComplete").description("챗봇 기능 준비 완료 여부"),
+                                fieldWithPath("findRegisterRepoResponses[].docsComplete").description("문서 생성 완료 여부")
                         )
                 ))
                 .andExpect(status().isOk());
