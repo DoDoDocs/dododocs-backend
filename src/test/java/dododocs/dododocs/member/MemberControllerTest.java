@@ -71,9 +71,9 @@ public class MemberControllerTest extends ControllerTestConfig {
         given(authService.extractMemberId(anyString())).willReturn(1L);
         given(memberService.findRegisterMemberRepoResponses(anyLong()))
                 .willReturn(new FindRegisterMemberRepoResponses(List.of(
-                        new FindRegisterRepoResponse(new RepoAnalyze("dododocs", "main", "key1", "key1", "https://dododocs.github.com",new Member(""))),
-                        new FindRegisterRepoResponse(new RepoAnalyze("moheng", "develop", "key2", "key3", "https://moheng.github.com",new Member(""))),
-                        new FindRegisterRepoResponse(new RepoAnalyze("repo-name3", "main", "key2", "key3", "https://repo-name3.github.com",new Member("")))
+                        new FindRegisterRepoResponse(new RepoAnalyze(1L, "dododocs", "main", "key1", "key1", "https://dododocs.github.com",new Member(""))),
+                        new FindRegisterRepoResponse(new RepoAnalyze(2L, "moheng", "develop", "key2", "key3", "https://moheng.github.com",new Member(""))),
+                        new FindRegisterRepoResponse(new RepoAnalyze(3L, "repo-name3", "main", "key2", "key3", "https://repo-name3.github.com",new Member("")))
                 )));
 
         // when, then
