@@ -25,6 +25,7 @@ import dododocs.dododocs.chatbot.dto.FindMemberInfoResponse;
 import dododocs.dododocs.config.ControllerTestConfig;
 import dododocs.dododocs.member.domain.Member;
 import dododocs.dododocs.member.dto.FindRegisterMemberRepoResponses;
+import dododocs.dododocs.member.dto.FindRegisterRepoResponse;
 import dododocs.dododocs.member.dto.FindRepoNameListResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -70,9 +71,9 @@ public class MemberControllerTest extends ControllerTestConfig {
         given(authService.extractMemberId(anyString())).willReturn(1L);
         given(memberService.findRegisterMemberRepoResponses(anyLong()))
                 .willReturn(new FindRegisterMemberRepoResponses(List.of(
-                        new RepoAnalyze("dododocs", "main", "key1", "key1", "https://dododocs.github.com", new Member("")),
-                        new RepoAnalyze("repo-name2", "develop", "key2", "key2", "https://repo.github.com", new Member("")),
-                        new RepoAnalyze("repo-name3", "feature/social-login", "key3", "key3", "https://repo3.github.com", new Member(""))
+                        new FindRegisterRepoResponse(new RepoAnalyze("dododocs", "main", "key1", "key1", "https://dododocs.github.com",new Member(""))),
+                        new FindRegisterRepoResponse(new RepoAnalyze("moheng", "develop", "key2", "key3", "https://moheng.github.com",new Member(""))),
+                        new FindRegisterRepoResponse(new RepoAnalyze("repo-name3", "main", "key2", "key3", "https://repo-name3.github.com",new Member("")))
                 )));
 
         // when, then
