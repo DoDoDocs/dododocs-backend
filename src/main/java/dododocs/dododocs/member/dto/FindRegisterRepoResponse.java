@@ -1,5 +1,6 @@
 package dododocs.dododocs.member.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import dododocs.dododocs.analyze.domain.RepoAnalyze;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,6 +14,8 @@ public class FindRegisterRepoResponse {
     private Long registeredRepoId;
     private String repositoryName;
     private String branchName;
+
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate createdAt;
     private boolean readmeComplete;
     private boolean chatbotComplete;
