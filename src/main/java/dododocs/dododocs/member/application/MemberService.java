@@ -88,7 +88,7 @@ public class MemberService {
             System.out.println("===========2222");
 
             try {
-                downloadFromS3Service.downloadAndProcessZipDocsInfo(registeredRepoId);
+                downloadFromS3Service.downloadAndProcessZipDocsInfoTest(registeredRepoId);
                 response.setDocsComplete(true);
             } catch (EmptyFolderException e) {
                 response.setDocsComplete(true);
