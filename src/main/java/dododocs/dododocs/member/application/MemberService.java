@@ -100,11 +100,19 @@ public class MemberService {
 
                 System.out.println("===========3333");
 
+                if(response.isDocsComplete() && response.isReadmeComplete() && response.isChatbotComplete()) {
+                    System.out.println("wwwwwwwwwwwwwwwwwqwoijejqoiwfnnfnfnfnfnfnwq");
+                    repoAnalyze.setAnalyzed(true);
+                    repoAnalyzeRepository.save(repoAnalyze);
+                }
+
                 findRegisterRepoResponses.add(response);
             } else {
+                System.out.println("=========gtyewrwerwerwebbggg");
                 response.setDocsComplete(true);
                 response.setReadmeComplete(true);
                 response.setChatbotComplete(true);
+                findRegisterRepoResponses.add(response);
             }
         }
 

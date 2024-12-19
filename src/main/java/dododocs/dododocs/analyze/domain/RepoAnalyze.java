@@ -4,10 +4,12 @@ import dododocs.dododocs.global.BaseEntity;
 import dododocs.dododocs.member.domain.Member;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 
 @Table(name = "repo_analyze")
 @Getter
 @Entity
+@Setter
 public class RepoAnalyze extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
