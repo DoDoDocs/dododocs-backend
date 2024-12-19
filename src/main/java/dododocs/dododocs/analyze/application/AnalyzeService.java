@@ -2,6 +2,7 @@ package dododocs.dododocs.analyze.application;
 
 import aj.org.objectweb.asm.TypeReference;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dododocs.dododocs.analyze.domain.RepoAnalyze;
 import dododocs.dododocs.analyze.domain.repository.MemberOrganizationRepository;
@@ -128,15 +129,17 @@ public class AnalyzeService {
             System.out.println("===================");
             System.out.println(e.getMessage());
             System.out.println("===================");
-            // throw new NoExistGitRepoException("존재하지 않는 레포지토리 또는 브랜치입니다.");
             return false;
         }
 
         // S3에 업로드
         try {
-            System.out.println("qweqweqweq-wep-=qw-=peqw-=eqwp-=ep-q=wep-=qwep=-qwe=p-qwep=-qwp=-e");
-            amazonS3Client.putObject("haon-dododocs", bucketDetailName, tempFile);
-            System.out.println("wqjejqiweiqwoeiqjwoijoiqwejoiqweoijqowie");
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.addUserMetadata("repository-name", repoName);
+            metadata.addUserMetadata("branch-name", branchName);
+            metadata.addUserMetadata("owner-name", ownerName);
+
+            amazonS3Client.putObject(new PutObjectRequest("haon-dododocs", bucketDetailName, tempFile).withMetadata(metadata));
         } catch (Exception e) {
             System.out.println("s3 에 업로드하다가 애러터짐");
             System.out.println("===================");
