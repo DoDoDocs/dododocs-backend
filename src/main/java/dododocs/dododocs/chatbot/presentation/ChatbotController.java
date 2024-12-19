@@ -40,12 +40,12 @@ public class ChatbotController {
     }
 
     @PostMapping("/question/save/{registeredRepoId}")
-    public Mono<ExternalQuestToChatbotResponse> questionToChatbotAndSaveLogs(@Authentication final Accessor accessor,
+    public Flux<ExternalQuestToChatbotResponse> questionToChatbotAndSaveLogs(@Authentication final Accessor accessor,
                                                                              @PathVariable final Long registeredRepoId,
                                                                              @RequestBody final QuestToChatbotRequest questToChatbotRequest) {
-        // return ResponseEntity.ok(chatbotService.questionToChatbotAndSaveLogsByWebFlux(registeredRepoId, questToChatbotRequest.getQuestion()));
-        return chatbotService.questionToChatbotAndSaveLogsByWebFlux(registeredRepoId, questToChatbotRequest.getQuestion());
+        return chatbotService.questionToChatbotAndSaveLogsByWebFlux(registeredRepoId, questToChatbotRequest.getQuestion()).flux();
     }
+
 
     @GetMapping("/logs/{registeredRepoId}")
     public ResponseEntity<FindChatLogResponses> findChatbotHistory(@Authentication final Accessor accessor,
