@@ -69,13 +69,31 @@ public class AnalyzeService {
         // 개인 소유자로 먼저 시도
         String ownerName = member.getOriginName();
 
-        boolean success = tryUploadFromOwner(ownerName, repoName, branchName);
+        // docs_key : msung99_moheng_main_DOCS.zip
+        // readme_key : msung99_moheng_main_README.md
+        String docsKey = ownerName + "_" + repoName + "_" + branchName + "_DOCS.zip";
+        String readmeKey = ownerName + "_" + repoName + "_" + branchName + "_README.md";
+
+        boolean success = tryUploadFromOwner(
+                String.format("https://github.com/%s/%s/%s", ownerName, repoName, branchName),
+                uploadGitRepoContentToS3Request.isIncludeTest(),
+                docsKey,
+                readmeKey,
+                uploadGitRepoContentToS3Request.isKorean(),
+                ownerName,
+                repoName,
+                branchName);
 
         // 개인 소유에서 찾지 못하면 조직 소유로 검색
         if (!success) {
             List<String> organizationNames = findOrganizationNames(member);
             for (String orgName : organizationNames) {
-                success = tryUploadFromOwner(orgName, repoName, branchName);
+                success = tryUploadFromOwner(String.format("https://github.com/%s/%s/%s", ownerName, repoName, branchName),
+                        uploadGitRepoContentToS3Request.isIncludeTest(),
+                        docsKey,
+                        readmeKey,
+                        uploadGitRepoContentToS3Request.isKorean(),
+                        orgName, repoName, branchName);
                 if (success) {
                     ownerName = orgName;
                     break;
@@ -114,7 +132,9 @@ public class AnalyzeService {
     }
 
     // 특정 소유자(개인 또는 조직)에서 레포지토리를 찾아 업로드 시도
-    private boolean tryUploadFromOwner(String ownerName, String repoName, String branchName) {
+    private boolean tryUploadFromOwner(String repoUrl, boolean includeTest, String docsKey, String readmeKey, boolean korean,
+                                       String ownerName, String repoName, String branchName) {
+
         String bucketDetailName = ownerName + "-" + repoName;
         String downloadUrl = String.format("https://github.com/%s/%s/archive/refs/heads/%s.zip", ownerName, repoName, branchName);
         System.out.println("Attempting to download from GitHub URL: " + downloadUrl);
@@ -135,9 +155,11 @@ public class AnalyzeService {
         // S3에 업로드
         try {
             ObjectMetadata metadata = new ObjectMetadata();
-            metadata.addUserMetadata("repository-name", repoName);
-            metadata.addUserMetadata("branch-name", branchName);
-            metadata.addUserMetadata("owner-name", ownerName);
+            metadata.addUserMetadata("repo_url", repoUrl);
+            metadata.addUserMetadata("include_test", String.valueOf(includeTest));
+            metadata.addUserMetadata("docs_key", docsKey);
+            metadata.addUserMetadata("readme_key", docsKey);
+            metadata.addUserMetadata("korean", String.valueOf(korean));
 
             amazonS3Client.putObject(new PutObjectRequest("haon-dododocs", bucketDetailName, tempFile).withMetadata(metadata));
         } catch (Exception e) {
