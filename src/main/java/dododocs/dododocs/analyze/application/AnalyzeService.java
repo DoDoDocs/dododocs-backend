@@ -135,7 +135,7 @@ public class AnalyzeService {
     private boolean tryUploadFromOwner(String repoUrl, boolean includeTest, String docsKey, String readmeKey, boolean korean,
                                        String ownerName, String repoName, String branchName) {
 
-        String bucketDetailName = ownerName + "-" + repoName;
+        String s3Key = "source/" + ownerName + "-" + repoName + "-" + branchName;
         String downloadUrl = String.format("https://github.com/%s/%s/archive/refs/heads/%s.zip", ownerName, repoName, branchName);
         System.out.println("Attempting to download from GitHub URL: " + downloadUrl);
 
@@ -158,10 +158,10 @@ public class AnalyzeService {
             metadata.addUserMetadata("repo_url", repoUrl);
             metadata.addUserMetadata("include_test", String.valueOf(includeTest));
             metadata.addUserMetadata("docs_key", docsKey);
-            metadata.addUserMetadata("readme_key", docsKey);
+            metadata.addUserMetadata("readme_key", readmeKey);
             metadata.addUserMetadata("korean", String.valueOf(korean));
 
-            amazonS3Client.putObject(new PutObjectRequest("haon-dododocs", bucketDetailName, tempFile).withMetadata(metadata));
+            amazonS3Client.putObject(new PutObjectRequest("haon-dododocs", s3Key, tempFile).withMetadata(metadata));
         } catch (Exception e) {
             System.out.println("s3 에 업로드하다가 애러터짐");
             System.out.println("===================");
