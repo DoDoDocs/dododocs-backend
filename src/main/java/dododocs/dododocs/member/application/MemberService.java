@@ -62,6 +62,7 @@ public class MemberService {
         return new FindRegisterMemberRepoResponses(findRepoRegisteredCompleteStatus(repoAnalyzes));
     }
 
+
     private List<FindRegisterRepoResponse> findRepoRegisteredCompleteStatus(final List<RepoAnalyze> repoAnalyzes) {
         List<FindRegisterRepoResponse> findRegisterRepoResponses = new ArrayList<>();
 
@@ -69,36 +70,42 @@ public class MemberService {
             final long registeredRepoId = repoAnalyze.getId();
             FindRegisterRepoResponse response = new FindRegisterRepoResponse(repoAnalyze);
 
-            try {
-                chatbotService.questionToChatbotAndSaveLogs(registeredRepoId, "레포지토리 정보 좀 요약해서 알려줄래?");
-                response.setChatbotComplete(true);
-            } catch (RuntimeException e) {
-                response.setChatbotComplete(false);
-            }
+            if(!repoAnalyze.isAnalyzed()) {
+                try {
+                    chatbotService.questionToChatbotAndSaveLogs(registeredRepoId, "레포지토리 정보 좀 요약해서 알려줄래?");
+                    response.setChatbotComplete(true);
+                } catch (RuntimeException e) {
+                    response.setChatbotComplete(false);
+                }
 
-            System.out.println("===========1111");
+                System.out.println("===========1111");
 
-            try {
-                downloadFromS3Service.downloadAndProcessZipReadmeInfo(registeredRepoId);
+                try {
+                    downloadFromS3Service.downloadAndProcessZipReadmeInfo(registeredRepoId);
+                    response.setReadmeComplete(true);
+                } catch (Exception e) {
+                    response.setReadmeComplete(false);
+                }
+
+                System.out.println("===========2222");
+
+                try {
+                    downloadFromS3Service.downloadAndProcessZipDocsInfoTest(registeredRepoId);
+                    response.setDocsComplete(true);
+                } catch (EmptyFolderException e) {
+                    response.setDocsComplete(true);
+                } catch (Exception e) {
+                    response.setDocsComplete(false);
+                }
+
+                System.out.println("===========3333");
+
+                findRegisterRepoResponses.add(response);
+            } else {
+                response.setDocsComplete(true);
                 response.setReadmeComplete(true);
-            } catch (Exception e) {
-                response.setReadmeComplete(false);
+                response.setChatbotComplete(true);
             }
-
-            System.out.println("===========2222");
-
-            try {
-                downloadFromS3Service.downloadAndProcessZipDocsInfoTest(registeredRepoId);
-                response.setDocsComplete(true);
-            } catch (EmptyFolderException e) {
-                response.setDocsComplete(true);
-            } catch (Exception e) {
-                response.setDocsComplete(false);
-            }
-
-            System.out.println("===========3333");
-
-            findRegisterRepoResponses.add(response);
         }
 
         return findRegisterRepoResponses;

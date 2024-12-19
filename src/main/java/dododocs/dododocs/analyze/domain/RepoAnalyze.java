@@ -32,6 +32,9 @@ public class RepoAnalyze extends BaseEntity {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
+    @Column(name = "analyzed")
+    private boolean analyzed = false;
+
     protected RepoAnalyze() {
     }
 
