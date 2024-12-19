@@ -5,6 +5,7 @@ import dododocs.dododocs.analyze.domain.RepoAnalyze;
 import dododocs.dododocs.analyze.domain.repository.RepoAnalyzeRepository;
 import dododocs.dododocs.analyze.dto.DownloadAiAnalyzeResponse;
 import dododocs.dododocs.analyze.dto.DownloadReadmeAnalyzeResponse;
+import dododocs.dododocs.analyze.dto.EmptyFolderException;
 import dododocs.dododocs.analyze.exception.NoExistRepoAnalyzeException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,11 @@ public class DownloadFromS3Service {
 
         // 2. ZIP 파일 압축 해제
         File extractedDir = unzipFile(zipFile);
+
+        // 3. 폴더가 비어있을 경우 예외 처리
+        if (extractedDir.listFiles() == null || extractedDir.listFiles().length == 0) {
+            throw new EmptyFolderException("압축 해제된 폴더가 비어 있습니다.");
+        }
 
         // 3. .md 파일을 FileDetail 형식으로 변환하여 분류
         Map<String, List<DownloadAiAnalyzeResponse.FileDetail>> categorizedFiles = collectAndCategorizeMarkdownFiles(extractedDir);

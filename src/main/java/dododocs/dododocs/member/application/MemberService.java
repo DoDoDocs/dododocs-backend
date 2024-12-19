@@ -6,6 +6,7 @@ import dododocs.dododocs.analyze.application.AnalyzeService;
 import dododocs.dododocs.analyze.application.DownloadFromS3Service;
 import dododocs.dododocs.analyze.domain.RepoAnalyze;
 import dododocs.dododocs.analyze.domain.repository.RepoAnalyzeRepository;
+import dododocs.dododocs.analyze.dto.EmptyFolderException;
 import dododocs.dododocs.analyze.exception.NoExistRepoAnalyzeException;
 import dododocs.dododocs.auth.domain.repository.MemberRepository;
 import dododocs.dododocs.auth.exception.NoExistMemberException;
@@ -88,6 +89,8 @@ public class MemberService {
 
             try {
                 downloadFromS3Service.downloadAndProcessZipDocsInfo(registeredRepoId);
+                response.setDocsComplete(true);
+            } catch (EmptyFolderException e) {
                 response.setDocsComplete(true);
             } catch (Exception e) {
                 response.setDocsComplete(false);
