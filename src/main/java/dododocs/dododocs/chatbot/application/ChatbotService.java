@@ -62,8 +62,7 @@ public class ChatbotService {
         final ExternalQuestToChatbotRequest questToChatbotRequest = new ExternalQuestToChatbotRequest(
                 repoAnalyze.getRepoUrl() + "/" + repoAnalyze.getBranchName(),
                 question,
-                recentChatLogs,
-                false
+                recentChatLogs
         );
 
         final ExternalQuestToChatbotResponse externalQuestToChatbotResponse = externalChatbotClient.questToChatbot(questToChatbotRequest);
