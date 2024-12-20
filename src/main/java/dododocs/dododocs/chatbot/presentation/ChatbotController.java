@@ -6,6 +6,7 @@ import dododocs.dododocs.chatbot.application.ChatbotService;
 import dododocs.dododocs.chatbot.dto.ExternalQuestToChatbotResponse;
 import dododocs.dododocs.chatbot.dto.FindChatLogResponses;
 import dododocs.dododocs.chatbot.dto.QuestToChatbotRequest;
+import dododocs.dododocs.chatbot.dto.TestWebFluxResponse;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -55,15 +56,19 @@ public class ChatbotController {
     }
 
     @GetMapping(value = "/stream-from-backend", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<String> streamFromBackend() {
+    public Flux<TestWebFluxResponse> streamFromBackend() {
         System.out.println("AI 서버로 데이터 요청 시작...");
         System.out.println(aiBasicUrl);
         return webClient.get()
                 .uri("/chat")
                 .retrieve()
                 .bodyToFlux(String.class) // SSE 데이터를 Flux로 수신
-                .doOnNext(data -> System.out.println("AI 서버에서 수신한 데이터: " + data))
+                .map(data -> {
+                    System.out.println("AI 서버에서 수신한 데이터: " + data);
+                    return new TestWebFluxResponse(data);
+                })
                 .doOnError(error -> System.err.println("AI 서버 연결 에러: " + error.getMessage()))
-                .onErrorResume(error -> Flux.just("AI 서버와 연결 중 문제가 발생했습니다."));
+                .onErrorResume(error -> Flux.just(new TestWebFluxResponse("AI 서버와 연결 중 문제가 발생했습니다.")));
     }
+
 }
