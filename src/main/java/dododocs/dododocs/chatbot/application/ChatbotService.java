@@ -37,9 +37,9 @@ public class ChatbotService {
                             final ExternalQuestToChatbotRequest questToChatbotRequest = new ExternalQuestToChatbotRequest(
                                     repoAnalyze.getRepoUrl() + "/" + repoAnalyze.getBranchName(),
                                     question,
-                                    recentChatLogs,
-                                    false
+                                    recentChatLogs
                             );
+
                             return externalChatbotClientByWebFlux.questToChatbot(questToChatbotRequest)
                                     .doOnSuccess(response -> {
                                         chatLogRepository.save(new ChatLog(question, response.getAnswer(), repoAnalyze));
