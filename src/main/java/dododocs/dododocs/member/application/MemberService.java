@@ -82,8 +82,24 @@ public FindRegisterMemberRepoResponses findRegisterMemberRepoResponses(final lon
         return new FindRegisterMemberRepoResponses(findRepoRegisteredCompleteStatus(repoAnalyzes));
     }
 
-
     private List<FindRegisterRepoResponse> findRepoRegisteredCompleteStatus(final List<RepoAnalyze> repoAnalyzes) {
+        List<FindRegisterRepoResponse> findRegisterRepoResponses = new ArrayList<>();
+
+        for (final RepoAnalyze repoAnalyze : repoAnalyzes) {
+            final long registeredRepoId = repoAnalyze.getId();
+
+            FindRegisterRepoResponse response = new FindRegisterRepoResponse(repoAnalyze);
+
+            response.setReadmeComplete(repoAnalyze.isReadmeCompleted());
+            response.setDocsComplete(repoAnalyze.isDocsCompleted());
+            response.setChatbotComplete(repoAnalyze.isChatbotCompleted());
+        }
+
+        return findRegisterRepoResponses;
+    }
+
+
+    /* private List<FindRegisterRepoResponse> findRepoRegisteredCompleteStatus(final List<RepoAnalyze> repoAnalyzes) {
         List<FindRegisterRepoResponse> findRegisterRepoResponses = new ArrayList<>();
 
         for (final RepoAnalyze repoAnalyze : repoAnalyzes) {
@@ -137,7 +153,7 @@ public FindRegisterMemberRepoResponses findRegisterMemberRepoResponses(final lon
         }
 
         return findRegisterRepoResponses;
-    }
+    } */
 
 
     public FindMemberInfoResponse findMemberInfo(final long memberId) {
