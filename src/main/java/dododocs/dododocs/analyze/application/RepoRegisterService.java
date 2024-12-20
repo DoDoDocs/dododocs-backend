@@ -42,7 +42,7 @@ public class RepoRegisterService {
     public void updateChatbotRepoAnalyzeReadyStatus(final UpdateChatbotDocsRepoAnalyzeReadyStatusRequest updateRepoAnalyzeReadyStatusRequest) {
         final RepoAnalyze repoAnalyze = findByRepoUrl(updateRepoAnalyzeReadyStatusRequest.getRepoUrl());
 
-        repoAnalyze.setReadmeCompleted(updateRepoAnalyzeReadyStatusRequest.isChatbotCompleted());
+        repoAnalyze.setChatbotCompleted(updateRepoAnalyzeReadyStatusRequest.isChatbotCompleted());
         repoAnalyzeRepository.save(repoAnalyze);
     }
 
@@ -54,6 +54,9 @@ public class RepoRegisterService {
 
         final String repoName = parts[4];
         final String branchName = parts[5];
+
+        System.out.println("repoName: +" + repoName);
+        System.out.println("branchName: +" + branchName);
 
         return repoAnalyzeRepository.findByRepositoryNameAndBranchName(repoName, branchName)
                 .orElseThrow(() -> new IllegalArgumentException("No RepoAnalyze found for repoName: " + repoName + " and branchName: " + branchName));
