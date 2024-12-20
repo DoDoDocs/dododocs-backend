@@ -93,6 +93,8 @@ public FindRegisterMemberRepoResponses findRegisterMemberRepoResponses(final lon
             response.setReadmeComplete(repoAnalyze.isReadmeCompleted());
             response.setDocsComplete(repoAnalyze.isDocsCompleted());
             response.setChatbotComplete(repoAnalyze.isChatbotCompleted());
+
+            findRegisterRepoResponses.add(response);
         }
 
         return findRegisterRepoResponses;
