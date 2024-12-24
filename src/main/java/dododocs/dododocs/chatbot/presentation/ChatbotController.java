@@ -95,7 +95,7 @@ public class ChatbotController {
     }
 
     @PostMapping(value = "/stream-and-save/{registeredRepoId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<TestWebFluxResponse> streamAndSaveChatLogs(@PathVariable final Long registeredRepoId,
+    public Flux<String> streamAndSaveChatLogs(@PathVariable final Long registeredRepoId,
                                                            @RequestBody final QuestToChatbotRequest questToChatbotRequest) {
         final RepoAnalyze repoAnalyze = repoAnalyzeRepository.findById(registeredRepoId)
                 .orElseThrow(() -> new NoExistRepoAnalyzeException("레포지토리 정보가 존재하지 않습니다."));
@@ -124,9 +124,8 @@ public class ChatbotController {
                 .map(data -> {
                     System.out.println("AI 서버에서 수신한 데이터: " + data);
                     // data 형식 파싱
-                    String parsedAnswer = parseAnswer(data);
-                    aggregatedText.append(parsedAnswer).append(" ");
-                    return new TestWebFluxResponse(parsedAnswer);
+                    aggregatedText.append(data).append(" ");
+                    return data;
                 })
                 .doOnComplete(() -> {
                     String aggregatedResult = aggregatedText.toString().trim();
@@ -136,31 +135,7 @@ public class ChatbotController {
                 .doOnError(error -> System.out.println("AI 서버 연결 에러: " + error.getMessage()))
                 .onErrorResume(error -> {
                     System.out.println("AI 서버와 연결 중 문제가 발생했습니다.");
-                    return Flux.just(new TestWebFluxResponse("AI 서버와 연결 중 문제가 발생했습니다."));
+                    return Flux.just("AI 서버와 연결 중 문제가 발생했습니다.");
                 });
     }
-
-    private String parseAnswer(String data) {
-        try {
-            // "data:" 이후의 JSON 추출
-            if (data.startsWith("data:")) {
-                data = data.substring(5).trim(); // "data:" 제거
-            }
-
-            // JSON 파싱
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode rootNode = objectMapper.readTree(data);
-            JsonNode answerNode = rootNode.path("answer");
-
-            // 내부 JSON 파싱
-            if (answerNode.isTextual()) {
-                JsonNode parsedAnswerNode = objectMapper.readTree(answerNode.asText());
-                return parsedAnswerNode.path("answer").asText();
-            }
-        } catch (JsonProcessingException e) {
-            System.out.println("JSON 파싱 에러: " + e.getMessage());
-        }
-        return "파싱 실패";
-    }
-
 }
