@@ -117,7 +117,7 @@ public class ChatbotController {
                 .uri("/chat")
                 .bodyValue(externalQuestToChatbotRequest)
                 .retrieve()
-                .bodyToFlux(String.class)
+                .bodyToFlux(TestWebFluxResponse.class)
                 .map(data -> {
                     System.out.println("AI 서버에서 수신한 데이터: " + data);
                     aggregatedText.append(data).append(" ");
