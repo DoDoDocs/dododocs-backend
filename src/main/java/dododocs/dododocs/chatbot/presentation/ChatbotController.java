@@ -96,7 +96,7 @@ public class ChatbotController {
 
     @PostMapping(value = "/stream-and-save/{registeredRepoId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<String> streamAndSaveChatLogs(@PathVariable final Long registeredRepoId,
-                                                           @RequestBody final QuestToChatbotRequest questToChatbotRequest) {
+                                              @RequestBody final QuestToChatbotRequest questToChatbotRequest) {
         final RepoAnalyze repoAnalyze = repoAnalyzeRepository.findById(registeredRepoId)
                 .orElseThrow(() -> new NoExistRepoAnalyzeException("레포지토리 정보가 존재하지 않습니다."));
 
@@ -123,9 +123,19 @@ public class ChatbotController {
                 .bodyToFlux(String.class) // 응답을 문자열로 받습니다.
                 .map(data -> {
                     System.out.println("AI 서버에서 수신한 데이터: " + data);
-                    // data 형식 파싱
-                    aggregatedText.append(data).append(" ");
-                    return data;
+
+                    // JSON 데이터에서 "answer" 키의 값을 추출
+                    String extractedAnswer;
+                    try {
+                        JsonNode jsonNode = new ObjectMapper().readTree(data);
+                        extractedAnswer = jsonNode.get("answer").asText();
+                    } catch (JsonProcessingException e) {
+                        System.out.println("JSON 파싱 오류: " + e.getMessage());
+                        throw new RuntimeException("응답 데이터 파싱 중 오류 발생", e);
+                    }
+
+                    aggregatedText.append(extractedAnswer).append(" ");
+                    return extractedAnswer; // 파싱된 값 반환
                 })
                 .doOnComplete(() -> {
                     String aggregatedResult = aggregatedText.toString().trim();
