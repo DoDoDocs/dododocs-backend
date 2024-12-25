@@ -152,6 +152,9 @@ public class AnalyzeService {
 
     private void downloadFileFromUrlWithAuth(String url, String accessToken, File destinationFile) throws IOException {
         URLConnection connection = new URL(url).openConnection();
+
+        System.out.println("🌴 accessToken: " + accessToken);
+
         connection.setRequestProperty("Authorization", "Bearer " + accessToken);
         try (InputStream inputStream = connection.getInputStream();
              OutputStream outputStream = new FileOutputStream(destinationFile)) {
