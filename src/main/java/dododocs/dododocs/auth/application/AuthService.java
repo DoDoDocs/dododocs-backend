@@ -1,15 +1,19 @@
 package dododocs.dododocs.auth.application;
 
+import dododocs.dododocs.auth.dto.GithubOAuthMemberWithAccessToken;
 import dododocs.dododocs.auth.exception.NoExistMemberException;
 import dododocs.dododocs.auth.infrastructure.GithubOAuthClient;
 import dododocs.dododocs.auth.infrastructure.GithubOAuthMember;
 import dododocs.dododocs.auth.domain.GithubOAuthUriProvider;
 import dododocs.dododocs.auth.domain.JwtTokenCreator;
 import dododocs.dododocs.auth.domain.repository.MemberRepository;
+import dododocs.dododocs.auth.infrastructure.GithubOrganizationClient;
 import dododocs.dododocs.member.domain.Member;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Service
 public class AuthService {
@@ -17,40 +21,37 @@ public class AuthService {
     private final JwtTokenCreator jwtTokenCreator;
     private final GithubOAuthClient githubOAuthClient;
     private final MemberRepository memberRepository;
-
-    public AuthService(final GithubOAuthUriProvider githubOAuthUriProvider,
-                       final JwtTokenCreator jwtTokenCreator,
-                       final GithubOAuthClient githubOAuthClient,
-                       final MemberRepository memberRepository) {
-        this.githubOAuthUriProvider = githubOAuthUriProvider;
-        this.jwtTokenCreator = jwtTokenCreator;
-        this.githubOAuthClient = githubOAuthClient;
-        this.memberRepository = memberRepository;
-    }
+    private final GithubOrganizationClient githubOrganizationClient;
 
     public String generateUri() {
         return githubOAuthUriProvider.generateUri();
     }
 
-    public String generateTokenWithCode(final String code) {
-        final GithubOAuthMember githubOAuthMember = githubOAuthClient.getOAuthMember(code);
-        final Member foundMember = findOrCreateMember(githubOAuthMember);
+    @Transactional
+    public String generateTokenWithCode(final String code) throws Exception {
+        final GithubOAuthMemberWithAccessToken githubOAuthMemberWithAccessToken = githubOAuthClient.getOAuthMember(code);
+        final GithubOAuthMember githubOAuthMember = githubOAuthMemberWithAccessToken.getGithubOAuthMember();
+        final String githubAccessToken = githubOAuthMemberWithAccessToken.getAccessToken();
+
+        final Member foundMember = findOrCreateMember(githubOAuthMemberWithAccessToken.getGithubOAuthMember(), githubAccessToken);
+
+        githubOrganizationClient.saveMemberOrganizationNames(foundMember, githubOAuthMember.getOriginName());
         final String accessToken = jwtTokenCreator.createToken(foundMember.getId());
         return accessToken;
     }
 
-    public Member findOrCreateMember(final GithubOAuthMember githubOAuthmember) {
-        final String email = githubOAuthmember.getEmail();
+    public Member findOrCreateMember(final GithubOAuthMember githubOAuthmember, final String githubAccessToken) {
+        final Long socialLoginId = githubOAuthmember.getSocialLoginId();
 
-        if(!memberRepository.existsByEmail(email)) {
-            memberRepository.save(generateMember(githubOAuthmember));
+        if(!memberRepository.existsBySocialLoginId(socialLoginId)) {
+            memberRepository.save(generateMember(githubOAuthmember, githubAccessToken));
         }
-        final Member foundMember = memberRepository.findByEmail(email);
+        final Member foundMember = memberRepository.findBySocialLoginId(socialLoginId);
         return foundMember;
     }
 
-    private Member generateMember(final GithubOAuthMember githubOAuthMember) {
-        return new Member(githubOAuthMember.getEmail(), githubOAuthMember.getNickName(), githubOAuthMember.getOriginName());
+    private Member generateMember(final GithubOAuthMember githubOAuthMember, final String githubAccessToken) {
+        return new Member(githubOAuthMember.getSocialLoginId(), githubOAuthMember.getNickName(), githubOAuthMember.getOriginName(), githubAccessToken);
     }
 
     public Long extractMemberId(final String accessToken) {

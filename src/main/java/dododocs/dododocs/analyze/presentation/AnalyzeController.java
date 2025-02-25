@@ -4,19 +4,21 @@ package dododocs.dododocs.analyze.presentation;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dododocs.dododocs.analyze.application.AnalyzeService;
+import dododocs.dododocs.analyze.dto.*;
+import dododocs.dododocs.auth.dto.Accessor;
+import dododocs.dododocs.auth.presentation.authentication.Authentication;
+import org.hibernate.sql.Update;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
@@ -25,96 +27,42 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 @RestController
-@RequestMapping("/api/download")
+@RequestMapping("/api")
 public class AnalyzeController {
     private final AnalyzeService analyzeService;
-    private final RestTemplate restTemplate = new RestTemplate();
-    private final String githubApiUrl = "https://api.github.com/repos/{owner}/{repo}/contents/{path}";
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public AnalyzeController(final AnalyzeService analyzeService) {
         this.analyzeService = analyzeService;
     }
 
-    @GetMapping("/github-folder")
-    public ResponseEntity<Resource> downloadGithubFolderAsZip() throws Exception {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+    // 1. 등록한 레포 리스트 뭐 되어있는지 조회 (유저당 최대 3개 레포 등록 가능)
+    // 2. 레포 등록시 DTO 수정 (korean, test 코드 넣을꺼임?)
+    // 3. 리드미 문자열 수정한거 DB 에 반영하기
+    // => Test API 에 리드미 수정한거 반영하기
 
-        try (ZipOutputStream zipOut = new ZipOutputStream(byteArrayOutputStream)) {
-            String owner = "msung99";
-            String repo = "Gatsby-Starter-Haon";
-            String path = ""; // 예: src/main/resources
-            addFolderToZip(owner, repo, path, zipOut, "");
-        }
-
-        ByteArrayResource resource = new ByteArrayResource(byteArrayOutputStream.toByteArray());
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"github_folder.zip\"");
-
-        return ResponseEntity.ok()
-                .headers(headers)
-                .contentLength(resource.contentLength())
-                .body(resource);
+    @PostMapping("/upload/s3")
+    public void uploadGithubToS3(@Authentication final Accessor accessor,
+                                 @RequestBody final UploadGitRepoContentToS3Request uploadToS3Request) {
+        // s3 key 값, 레포 주소 필요
+        analyzeService.uploadGithubRepoToS3(uploadToS3Request, accessor.getId());
     }
 
-    private void addFolderToZip(String owner, String repo, String path, ZipOutputStream zipOut, String parentPath) throws Exception {
-        String url = githubApiUrl.replace("{owner}", owner)
-                .replace("{repo}", repo)
-                .replace("{path}", path);
+    /* @PutMapping("/docs/update/{registeredRepoId}")
+    public ResponseEntity<Void> updateDocsContents(@Authentication final Accessor accessor,
+                                                     @PathVariable final Long registeredRepoId,
+                                                     @RequestBody final UpdateDocsRequest updateDocsRequest) throws Exception {
+        analyzeService.updateDocsContents(updateDocsRequest.getFileName());
+        return ResponseEntity.noContent().build();
+    } */
 
-        Object response = restTemplate.getForObject(url, Object.class);
 
-        if (response instanceof List) {
-            List<Map<String, Object>> fileList = objectMapper.convertValue(response, new TypeReference<List<Map<String, Object>>>() {});
-
-            for (Map<String, Object> fileData : fileList) {
-                String type = (String) fileData.get("type");
-                String name = (String) fileData.get("name");
-                String downloadUrl = (String) fileData.get("download_url");
-                String filePath = parentPath + name;
-
-                if ("file".equals(type) && downloadUrl != null) {
-                    System.out.println("Adding file to ZIP: " + filePath + " from " + downloadUrl);
-                    try (InputStream inputStream = new URL(downloadUrl).openStream()) {
-                        zipOut.putNextEntry(new ZipEntry(filePath));
-                        inputStream.transferTo(zipOut);
-                        zipOut.closeEntry();
-                    } catch (Exception e) {
-                        System.err.println("파일을 추가하는 중 오류 발생: " + filePath);
-                        e.printStackTrace();
-                    }
-                } else if ("dir".equals(type)) {
-                    System.out.println("Entering directory: " + filePath);
-                    addFolderToZip(owner, repo, path + "/" + name, zipOut, filePath + "/");
-                }
-            }
-        } else {
-            System.out.println("응답이 파일 목록이 아닙니다.");
-        }
+    @GetMapping("/repo/contents")
+    public RepositoryContentDto getRepoContents(@Authentication final Accessor accessor,
+                                                @RequestBody final FindGitRepoContentRequest findGitRepoContentRequest) throws IOException {
+        return analyzeService.getRepositoryContents(accessor.getId(), findGitRepoContentRequest.getRepositoryName(), findGitRepoContentRequest.getBranchName());
     }
 
-    @GetMapping("/github-repo-zip")
-    public ResponseEntity<Resource> downloadGithubRepositoryAsZip() throws Exception {
-        String owner = "msung99";   // => gitHub 사용자명 또는 조직명
-        String repo = "Gatsby-Starter-Haon";   // => 레포지토리 이름
-        String branch = "main";      // => main
-
-        String downloadUrl = String.format("https://github.com/%s/%s/archive/refs/heads/%s.zip", owner, repo, branch);
-
-        // URL에서 InputStream 가져오기
-        InputStream inputStream = new URL(downloadUrl).openStream();
-        InputStreamResource resource = new InputStreamResource(inputStream);
-
-        // HTTP 헤더 설정
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + repo + "-" + branch + ".zip\"");
-
-        analyzeService.uploadZipToS3(repo);
-
-        return ResponseEntity.ok()
-                .headers(headers)
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .body(resource);
-    }
+    // 업로딩 되고있는(= 아직 AI 로 부터 챗봇, docs, readme 중 단 하나라도 제공받지 못하는 레포가 있는 경우) 레포지토리 있으면 -> ID 값 리턴
+    // else => null 리턴
 }
 

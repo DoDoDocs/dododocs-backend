@@ -18,7 +18,12 @@ jobs:
       - name: Set up Git user
         run: |
           git config --global user.name "42kko_syncbot"
-          
+
+      # Dockerfile에서 주석 제거
+      - name: Uncomment proxy settings in Dockerfile
+        run: |
+          sed -i '/# RUN echo "systemProp.http.proxyHost=krmp-proxy.9rum.cc/ s/^# //' Dockerfile
+    
       # .github/workflows 디렉토리 삭제
       - name: Remove workflows directory
         run: |

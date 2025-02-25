@@ -1,4 +1,7 @@
 spring:
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
   application:
     name: dododocs
   datasource:
@@ -13,7 +16,7 @@ spring:
         dialect: org.hibernate.dialect.MySQL8Dialect
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     open-in-view: false
   level:
     org:
@@ -49,5 +52,6 @@ cloud:
       accessKey: ${AWS_CREDEZNTIALS_ACCESSKEY}
       secretKey: ${AWS_CREDEZNTIALS_SECRETKEY}
 
-
+ai:
+  basic_url: ${AI_BASIC_URL}
 

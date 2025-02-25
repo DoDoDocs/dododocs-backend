@@ -1,0 +1,160 @@
+== ⛳️ AI 문서화
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+
+=== AI 분석 및 문서화 요청 (레포 등록)
+
+include::{snippets}/analyze/upload/success/http-request.adoc[]
+
+==== HTTP Request
+
+include::{snippets}/analyze/upload/success/http-request.adoc[]
+
+==== Request Body
+
+include::{snippets}/analyze/upload/success/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/analyze/upload/success/http-response.adoc[]
+
+=== 레포지토리 등록 실패 (존재하지 않는 (잘못된) 깃허브 레포지토리 URL 이나 브랜치명을 입력 받았을 때)
+
+==== HTTP Request
+
+include::{snippets}/analyze/upload/fail/noExistRepoInfo/http-request.adoc[]
+
+===== Request Body
+
+include::{snippets}/analyze/upload/fail/noExistRepoInfo/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/analyze/upload/fail/noExistRepoInfo/http-response.adoc[]
+
+=== AI 분석 DOCS 결과 불러오기
+
+==== HTTP Request
+
+include::{snippets}/analyze/download/docs/success/http-request.adoc[]
+
+==== Path Variable
+
+include::{snippets}/analyze/download/docs/success/path-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/analyze/download/docs/success/http-response.adoc[]
+
+===== Response Body
+
+include::{snippets}/analyze/download/docs/success/response-fields.adoc[]
+
+=== AI 분석 README 결과 불러오기
+
+==== HTTP Request
+
+include::{snippets}/analyze/download/readme/success/http-request.adoc[]
+
+==== Path Variable
+
+include::{snippets}/analyze/download/readme/success/path-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/analyze/download/readme/success/http-response.adoc[]
+
+===== Response Body
+
+include::{snippets}/analyze/download/readme/success/response-fields.adoc[]
+
+
+=== AI 분석 DOCS (또는 README, 챗봇 질문하기 등) 결과 불러오기 실패 (아직 AI 가 Document 생성을 완료하지 못한 경우)
+
+==== HTTP Request
+
+include::{snippets}/analyze/download/docs/fail/http-request.adoc[]
+
+==== Path Variable
+
+include::{snippets}/analyze/download/docs/fail/path-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/analyze/download/docs/fail/http-response.adoc[]
+
+=== 멤버가 등록한 레포지토리 리스트 조회
+
+==== HTTP Request
+
+include::{snippets}/repos/registered/find/success/http-request.adoc[]
+
+==== Request Header
+
+include::{snippets}/repos/registered/find/success/request-headers.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/repos/registered/find/success/http-response.adoc[]
+
+==== Response Field
+
+include::{snippets}/repos/registered/find/success/response-fields.adoc[]
+
+=== 등록된 레포지토리 삭제
+
+==== HTTP Request
+
+include::{snippets}/register/delete/success/http-request.adoc[]
+
+===== Request Header
+
+include::{snippets}/register/delete/success/request-headers.adoc[]
+
+===== Request Body
+
+include::{snippets}/register/delete/success/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/register/delete/success/http-response.adoc[]
+
+
+=== 레포에서 특정 파일명을 입력했을 때, 그에 대한 리드미 내용을 제공하는 API
+
+==== HTTP Request
+
+include::{snippets}/download/repo/file/detail/success/http-request.adoc[]
+
+===== Request Header
+
+include::{snippets}/download/repo/file/detail/success/request-headers.adoc[]
+
+===== Query Param
+
+include::{snippets}/download/repo/file/detail/success/query-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/download/repo/file/detail/success/http-response.adoc[]
+
+===== Response Body
+
+include::{snippets}/download/repo/file/detail/success/response-fields.adoc[]
+
+=== 리드미 내용 수정 API
+
+==== HTTP Request
+
+include::{snippets}/readme/update/success/http-request.adoc[]
+
+===== Request Param
+
+include::{snippets}/readme/update/success/query-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/readme/update/success/http-response.adoc[]
